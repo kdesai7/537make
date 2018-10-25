@@ -4,6 +4,20 @@ EXE=537make
 # LIBS is placed at the end of gcc's linking stage (after all .o files) so it links the necessary library functions (like pthread) to your code
 LIBS=-lpthread # if needed, add more libraries here
 
+FILES = build_spec_graph.c \
+		build_spec_graph.h \
+		build_spec_repr.c \
+		build_spec_repr.h \
+		main.c \
+		proc_creation_prog_exe.c \
+		proc_creation_prog_exe.h \
+		text_parsing.c \
+		text_parsing.h
+HEADER_INFO = student,full name (as in Canvas),Net ID,CS ID,wisc email (not CS email),campus ID number
+MARK_INFO = 1,Mark Wiemer,mwiemer2,mww,mwiemer2@wisc.edu,9074356420
+JENNY_INFO = 2,Jenny Ye,hye35,haengjung,hye35@wisc.edu,9075878315
+
+
 # the -g flag at all gcc compilation stages ensures that you can use gdb to debug your code
 $(EXE): main.o build_spec_graph.o text_parsing.o build_spec_repr.o proc_creation_prog_exe.o
 	$(CC) -g -o $(EXE) main.o build_spec_graph.o text_parsing.o build_spec_repr.o proc_creation_prog_exe.o $(LIBS)
@@ -30,3 +44,11 @@ clean:
 # recompile runs clean and then makes everything again to generate executable
 # this is equivalent to running "make clean" followed by "make"
 recompile: clean $(EXE)
+
+# add info to each file
+info:
+	for file in $(FILES) ; do \
+		vim -c "1 s/^.*$$/\/\/ $(HEADER_INFO)" -c "wq" $$file ; \
+		vim -c "2 s/^.*$$/\/\/ $(MARK_INFO)" -c "wq" $$file ; \
+		vim -c "3 s/^.*$$/\/\/ $(JENNY_INFO)" -c "wq" $$file ; \
+	done
