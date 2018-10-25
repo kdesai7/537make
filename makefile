@@ -17,6 +17,10 @@ HEADER_INFO = student,full name (as in Canvas),Net ID,CS ID,wisc email (not CS e
 MARK_INFO = 1,Mark Wiemer,mwiemer2,mww,mwiemer2@wisc.edu,9074356420
 JENNY_INFO = 2,Jenny Ye,hye35,haengjung,hye35@wisc.edu,9075878315
 
+# Text appearance (color)
+# https://misc.flogisoft.com/bash/tip_colors_and_formatting
+NORMAL = \e[0m
+LIGHT_GREEN = \e[92m
 
 # the -g flag at all gcc compilation stages ensures that you can use gdb to debug your code
 $(EXE): main.o build_spec_graph.o text_parsing.o build_spec_repr.o proc_creation_prog_exe.o
@@ -44,6 +48,11 @@ clean:
 # recompile runs clean and then makes everything again to generate executable
 # this is equivalent to running "make clean" followed by "make"
 recompile: clean $(EXE)
+
+# run tests
+test: $(EXE)
+	$(EXE)
+	echo -e "$(LIGHT_GREEN)SUCCESS$(NORMAL)"
 
 # add info to each file
 info:
