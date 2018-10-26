@@ -5,6 +5,9 @@
 #include <stdio.h>
 
 #include "build_spec_repr.h"
+#include "text_parsing.h"
+
+#define FILENAME "in.txt"
 
 const int BUFFSIZE = 256;
 const int MAX_ARG_COUNT = 128;
@@ -14,7 +17,15 @@ const int MAX_DEP_COUNT = 128;
 int main() {
 	TargetInfo* t = newTargetInfo();
 	if (t == NULL) {
+		fprintf(stderr, "newTargetInfo failed\n");
 		return 1;
 	}
+
+	int error = parse(FILENAME);
+	if (error) {
+		fprintf(stderr, "Parsing failed\n");
+		return 2;
+	}
+
 	return 0;
 }

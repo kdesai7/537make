@@ -33,7 +33,7 @@ main.o: main.c build_spec_graph.h text_parsing.h build_spec_repr.h proc_creation
 build_spec_graph.o: build_spec_graph.c build_spec_graph.h
 	$(CC) -g $(WARNING_FLAGS) -c build_spec_graph.c
 
-text_parsing.o: text_parsing.c text_parsing.h
+text_parsing.o: text_parsing.c text_parsing.h build_spec_repr.h main.h
 	$(CC) -g $(WARNING_FLAGS) -c text_parsing.c
 
 build_spec_repr.o: build_spec_repr.c build_spec_repr.h main.h

@@ -9,10 +9,17 @@
 #include "build_spec_repr.h"
 
 int parse(char* filename) {
+	FILE* file;
 	char* buffer;
 	int c;
 	int validLine = 0;
 	int firstLine = 1;	// firstLine has to start with the target
+
+	file = fopen(filename, "r");
+	if (file == NULL) {
+		fprintf(stderr, "File not found\n");
+		return 2;
+	}
 
 	while (1) {
 		buffer = (char*) malloc(BUFFSIZE * sizeof(char));
@@ -21,19 +28,34 @@ int parse(char* filename) {
 			return 1;
 		}
 		for (int i=0; i < BUFFSIZE; i++) {
-			c = getchar();
+			c = getc(file);
 			if (c == '\n') {
 				if (i == 0)  {	 // blank line
 					i = -1;   // go back to the first element of the buffer
-					continue;	
+					printf("Empty line\n");
+					continue;
 				} else {
 					buffer[i] = '\0';
 					validLine = 1;
 					firstLine = 0;
+					printf("End of nonempty line\n");
 					break;
 				}
 			}
+
+			if (c == EOF) {
+				buffer[i] = '\0';
+				validLine = 1;
+				firstLine = 0;
+				printf("EOF\n");
+				return 0;
+			}
+
+			buffer[i] = c;
 		}
+		printf("%s\n", buffer);
 	}
+
+	fclose(file);
 	return 0;
 }
