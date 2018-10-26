@@ -9,6 +9,7 @@ FILES = build_spec_graph.c \
 		build_spec_repr.c \
 		build_spec_repr.h \
 		main.c \
+		main.h \
 		proc_creation_prog_exe.c \
 		proc_creation_prog_exe.h \
 		text_parsing.c \
@@ -35,7 +36,7 @@ build_spec_graph.o: build_spec_graph.c build_spec_graph.h
 text_parsing.o: text_parsing.c text_parsing.h
 	$(CC) -g $(WARNING_FLAGS) -c text_parsing.c
 
-build_spec_repr.o: build_spec_repr.c build_spec_repr.h
+build_spec_repr.o: build_spec_repr.c build_spec_repr.h main.h
 	$(CC) -g $(WARNING_FLAGS) -c build_spec_repr.c
 
 proc_creation_prog_exe.o: proc_creation_prog_exe.c proc_creation_prog_exe.h

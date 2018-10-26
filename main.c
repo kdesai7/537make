@@ -4,6 +4,17 @@
 
 #include <stdio.h>
 
+#include "build_spec_repr.h"
+
+const int BUFFSIZE = 256;
+const int MAX_ARG_COUNT = 128;
+const int MAX_CMD_COUNT = 128;
+const int MAX_DEP_COUNT = 128;
+
 int main() {
+	TargetInfo* t = newTargetInfo();
+	if (t == NULL) {
+		return 1;
+	}
 	return 0;
 }
