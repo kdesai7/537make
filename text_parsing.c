@@ -8,8 +8,20 @@
 #include "main.h"
 #include "build_spec_repr.h"
 
+static const int TARGET = 0; // the name of the target
+static const int DEPENDENCY = 1; // a dependency of some target
+static const int COMMAND = 2; // the command to execute the target
+
 /**
+ * Adds the given token to the targets structure
  *
+ * Returns 0 on success, nonzero on error.
+ */
+int processToken(char* token, int type) {
+	printf("%s\n", token);
+}
+
+/**
  * Error codes:
  *     - 1: malloc failed
  *     - 2: file not found
@@ -45,15 +57,22 @@ int parse(char* filename) {
 				} else {
 					buffer[i] = '\0';
 					validToken = 1;
-					firstLine = 0;
 					break;
 				}
 			} // end 'if newline', no else needed because we continue or break
 
-			if (c == EOF) {
+			if (c == ' ') {
 				buffer[i] = '\0';
 				validToken = 1;
-				firstLine = 0;
+				break;
+			}
+
+			if (c == EOF) {
+				if (i == 0) {
+					return 0;
+				}
+				buffer[i] = '\0';
+				validToken = 1;
 				return 0;
 			} // end if EOF
 
@@ -64,7 +83,7 @@ int parse(char* filename) {
 			fprintf(stderr, "Token too long\n");
 			return 3;
 		}
-		printf("%s\n", buffer);
+		processToken(buffer, -1);
 	}
 
 	fclose(file);
