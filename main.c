@@ -7,25 +7,35 @@
 #include "build_spec_repr.h"
 #include "text_parsing.h"
 
-#define FILENAME "in.txt"
-
 const int BUFFSIZE = 256;
 const int MAX_ARG_COUNT = 128;
 const int MAX_CMD_COUNT = 128;
 const int MAX_DEP_COUNT = 128;
 
+const int NUM_FILES = 3;
+
 int main() {
+	int error = 0;
+	char* files[NUM_FILES];
+	files[0] = "in.txt";
+	files[1] = "spaces.txt";
+	files[2] = "blank.txt";
+
 	TargetInfo* t = newTargetInfo();
 	if (t == NULL) {
 		fprintf(stderr, "newTargetInfo failed\n");
 		return 1;
 	}
 
-	int error = parse(FILENAME);
-	if (error) {
-		fprintf(stderr, "Parsing failed\n");
-		return 2;
+	for (int i = 0; i < NUM_FILES; i++) {
+		printf("Parsing %s\n", files[i]);
+		if (parse(files[i])) {
+			fprintf(stderr, "Parsing of %s failed\n", files[i]);
+			error = 1;
+		}
+		printf("Done parsing %s\n", files[i]);
 	}
+	if (error) return 2;
 
 	return 0;
 }

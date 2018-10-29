@@ -38,7 +38,6 @@ int parse(char* filename) {
 					buffer[i] = '\0';
 					validLine = 1;
 					firstLine = 0;
-					printf("End of nonempty line\n");
 					break;
 				}
 			}
@@ -47,7 +46,6 @@ int parse(char* filename) {
 				buffer[i] = '\0';
 				validLine = 1;
 				firstLine = 0;
-				printf("EOF\n");
 				return 0;
 			}
 
