@@ -15,6 +15,7 @@ static const int COMMAND = 2; // the command to execute the target
 
 static const char* MSG_MALLOC = "Malloc failed";
 static const char* MSG_FILE_NOT_FOUND = "File not found";
+static const char* MSG_FILE_NOT_CLOSED = "File failed to close";
 static const char* MSG_TOKEN_TOO_LONG = "Token too long";
 static const char* MSG_LINE_STARTS_WITH_SPACE = "Line starts with space";
 
@@ -84,7 +85,10 @@ TargetInfo** parse(char* filename) {
 
 			if (c == EOF) {
 				if (i == 0) { // Done with the method
-					fclose(file); // TODO check return value
+					if (fclose(file)) {
+						fprintf(stderr, "%s\n", MSG_FILE_NOT_CLOSED);
+						return NULL;
+					}
 					return tib->targets;
 				}
 				buffer[i] = '\0';
