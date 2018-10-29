@@ -12,6 +12,16 @@ static const int TARGET = 0; // the name of the target
 static const int DEPENDENCY = 1; // a dependency of some target
 static const int COMMAND = 2; // the command to execute the target
 
+static const int ERR_MALLOC = 1;
+static const int ERR_FILE_NOT_FOUND = 2;
+static const int ERR_TOKEN_TOO_LONG = 3;
+static const int ERR_LINE_STARTS_WITH_SPACE = 4;
+
+static const char* MSG_MALLOC = "Malloc failed";
+static const char* MSG_FILE_NOT_FOUND = "File not found";
+static const char* MSG_TOKEN_TOO_LONG = "Token too long";
+static const char* MSG_LINE_STARTS_WITH_SPACE = "Line starts with space";
+
 /**
  * Adds the given token to the targets structure
  *
@@ -37,15 +47,15 @@ int parse(char* filename) {
 
 	file = fopen(filename, "r");
 	if (file == NULL) {
-		fprintf(stderr, "File not found\n");
-		return 2;
+		fprintf(stderr, "%s\n", MSG_FILE_NOT_FOUND);
+		return ERR_FILE_NOT_FOUND;
 	}
 
 	while (1) {
 		buffer = (char*) malloc(BUFFSIZE * sizeof(char));
 		if (buffer == NULL) {
-			fprintf(stderr, "ERROR : Malloc failed\n");
-			return 1;
+			fprintf(stderr, "%s\n", MSG_MALLOC);
+			return ERR_MALLOC;
 		}
 		validToken = 0; // assume invalid until told otherwise
 		for (int i = 0; i < BUFFSIZE; i++) {
@@ -64,8 +74,8 @@ int parse(char* filename) {
 
 			if (c == ' ') {
 				if (i == 0) {
-					fprintf(stderr, "Line starts with space\n");
-					return 4;
+					fprintf(stderr, "%s\n", MSG_LINE_STARTS_WITH_SPACE);
+					return ERR_LINE_STARTS_WITH_SPACE;
 				}
 				buffer[i] = '\0';
 				validToken = 1;
@@ -85,8 +95,8 @@ int parse(char* filename) {
 		} // end buffer population
 
 		if (!validToken) {
-			fprintf(stderr, "Token too long\n");
-			return 3;
+			fprintf(stderr, "%s\n", MSG_TOKEN_TOO_LONG);
+			return ERR_TOKEN_TOO_LONG;
 		}
 		processToken(buffer, -1);
 	}
