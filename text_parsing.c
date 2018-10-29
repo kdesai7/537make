@@ -8,12 +8,19 @@
 #include "main.h"
 #include "build_spec_repr.h"
 
+/**
+ *
+ * Error codes:
+ *     - 1: malloc failed
+ *     - 2: file not found
+ *     - 3: token too long
+ */
 int parse(char* filename) {
 	FILE* file;
-	char* buffer;
+	char* buffer; // stores one token at a time
 	int c;
-	int validLine = 0;
-	int firstLine = 1;	// firstLine has to start with the target
+	int validToken = 0; // false iff buffer overflow
+	int firstLine = 1; // firstLine has to start with the target
 
 	file = fopen(filename, "r");
 	if (file == NULL) {
@@ -27,29 +34,35 @@ int parse(char* filename) {
 			fprintf(stderr, "ERROR : Malloc failed\n");
 			return 1;
 		}
-		for (int i=0; i < BUFFSIZE; i++) {
+		validToken = 0; // assume invalid until told otherwise
+		for (int i = 0; i < BUFFSIZE; i++) {
 			c = getc(file);
 			if (c == '\n') {
-				if (i == 0)  {	 // blank line
-					i = -1;   // go back to the first element of the buffer
+				if (i == 0)  { // we've encountered a blank line
+					i = -1; // go back to the first element of the buffer
 					printf("Empty line\n");
 					continue;
 				} else {
 					buffer[i] = '\0';
-					validLine = 1;
+					validToken = 1;
 					firstLine = 0;
 					break;
 				}
-			}
+			} // end 'if newline', no else needed because we continue or break
 
 			if (c == EOF) {
 				buffer[i] = '\0';
-				validLine = 1;
+				validToken = 1;
 				firstLine = 0;
 				return 0;
-			}
+			} // end if EOF
 
 			buffer[i] = c;
+		} // end buffer population
+
+		if (!validToken) {
+			fprintf(stderr, "Token too long\n");
+			return 3;
 		}
 		printf("%s\n", buffer);
 	}
