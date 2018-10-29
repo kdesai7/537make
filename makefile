@@ -18,6 +18,9 @@ HEADER_INFO = student,full name (as in Canvas),Net ID,CS ID,wisc email (not CS e
 MARK_INFO = 1,Mark Wiemer,mwiemer2,mww,mwiemer2@wisc.edu,9074356420
 JENNY_INFO = 2,Jenny Ye,hye35,haengjung,hye35@wisc.edu,9075878315
 
+SPACES = "+%s/\s\+$$//" "+w" # remove right-trailing whitespace
+QUIT = "+q!"
+
 # Text appearance (color)
 # https://misc.flogisoft.com/bash/tip_colors_and_formatting
 NORMAL = \e[0m
@@ -61,4 +64,10 @@ info:
 		vim -c "1 s/^.*$$/\/\/ $(HEADER_INFO)" -c "wq" $$file ; \
 		vim -c "2 s/^.*$$/\/\/ $(MARK_INFO)" -c "wq" $$file ; \
 		vim -c "3 s/^.*$$/\/\/ $(JENNY_INFO)" -c "wq" $$file ; \
+	done
+
+# remove trailing whitespace
+spaces:
+	for file in $(FILES) makefile ; do \
+		vim $$file $(SPACES) $(QUIT) ; \
 	done
