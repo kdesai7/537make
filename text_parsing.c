@@ -26,6 +26,7 @@ int processToken(char* token, int type) {
  *     - 1: malloc failed
  *     - 2: file not found
  *     - 3: token too long
+ *     - 4: line starts with space
  */
 int parse(char* filename) {
 	FILE* file;
@@ -62,6 +63,10 @@ int parse(char* filename) {
 			} // end 'if newline', no else needed because we continue or break
 
 			if (c == ' ') {
+				if (i == 0) {
+					fprintf(stderr, "Line starts with space\n");
+					return 4;
+				}
 				buffer[i] = '\0';
 				validToken = 1;
 				break;

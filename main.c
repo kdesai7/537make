@@ -29,9 +29,14 @@ int main() {
 
 	for (int i = 0; i < NUM_FILES; i++) {
 		printf("Parsing %s\n", files[i]);
+		if (i == 1) {
+			printf("This should fail...\n");
+		}
 		if (parse(files[i])) {
 			fprintf(stderr, "Parsing of %s failed\n", files[i]);
-			error = 1;
+			if (i != 1) { // i == 1 should fail, parsing spaces should fail
+				error = 1;
+			}
 		}
 		printf("Done parsing %s\n", files[i]);
 	}
