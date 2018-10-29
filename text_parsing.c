@@ -19,12 +19,19 @@ static const char* MSG_FILE_NOT_CLOSED = "File failed to close";
 static const char* MSG_TOKEN_TOO_LONG = "Token too long";
 static const char* MSG_LINE_STARTS_WITH_SPACE = "Line starts with space";
 
+static const int ERR_INVALID_TOKEN_TYPE = 1;
+
 /**
  * Adds the given token to the targets structure
  *
  * Returns 0 on success, nonzero on error.
+ *
  */
 int processToken(char* token, int type) {
+	if (type != TARGET && type != DEPENDENCY && type != COMMAND) { // invalid
+		fprintf(stderr, "Invalid token type\n");
+		return ERR_INVALID_TOKEN_TYPE;
+	}
 	printf("%s\n", token);
 	return 0;
 }

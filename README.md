@@ -12,5 +12,6 @@ A reproduction of the basic functionality of make, including makefile parsing, d
 ## Testing
 
 Running `make test` automatically compiles and tests the code. The tests should output "SUCCESS" in green at the end. Manually inspect the output to make sure:
+* Parsing in.txt results in multiple invalid token types
 * Parsing blank.txt resulted in several empty lines being parsed and nothing more
 * Parsing spaces.txt resulted in two empty lines being parsed and then a line starts with a space error occurs
