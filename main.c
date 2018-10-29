@@ -11,6 +11,7 @@ const int BUFFSIZE = 256;
 const int MAX_ARG_COUNT = 128;
 const int MAX_CMD_COUNT = 128;
 const int MAX_DEP_COUNT = 128;
+const int MAX_TARGETS = 256;
 
 const int NUM_FILES = 3;
 
@@ -32,7 +33,7 @@ int main() {
 		if (i == 1) {
 			printf("This should fail...\n");
 		}
-		if (parse(files[i])) {
+		if (parse(files[i]) == NULL) {
 			fprintf(stderr, "Parsing of %s failed\n", files[i]);
 			if (i != 1) { // i == 1 should fail, parsing spaces should fail
 				error = 1;

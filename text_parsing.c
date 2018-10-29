@@ -7,15 +7,11 @@
 
 #include "main.h"
 #include "build_spec_repr.h"
+#include "text_parsing.h"
 
 static const int TARGET = 0; // the name of the target
 static const int DEPENDENCY = 1; // a dependency of some target
 static const int COMMAND = 2; // the command to execute the target
-
-static const int ERR_MALLOC = 1;
-static const int ERR_FILE_NOT_FOUND = 2;
-static const int ERR_TOKEN_TOO_LONG = 3;
-static const int ERR_LINE_STARTS_WITH_SPACE = 4;
 
 static const char* MSG_MALLOC = "Malloc failed";
 static const char* MSG_FILE_NOT_FOUND = "File not found";
@@ -29,33 +25,37 @@ static const char* MSG_LINE_STARTS_WITH_SPACE = "Line starts with space";
  */
 int processToken(char* token, int type) {
 	printf("%s\n", token);
+	return 0;
 }
 
-/**
- * Error codes:
- *     - 1: malloc failed
- *     - 2: file not found
- *     - 3: token too long
- *     - 4: line starts with space
- */
-int parse(char* filename) {
+TargetInfoBuilder* newTargetInfoBuilder(int capacity) {
+	TargetInfoBuilder* t =
+		(TargetInfoBuilder*) malloc(sizeof(TargetInfoBuilder));
+	t->targets = (TargetInfo**) malloc(capacity * sizeof(TargetInfo*));
+	t->MAX_CAPACITY = capacity;
+	t->currentIndex = 0;
+	return t;
+}
+
+TargetInfo** parse(char* filename) {
+	TargetInfoBuilder* tib = newTargetInfoBuilder(MAX_TARGETS);
+
 	FILE* file;
 	char* buffer; // stores one token at a time
 	int c;
 	int validToken = 0; // false iff buffer overflow
-	int firstLine = 1; // firstLine has to start with the target
 
 	file = fopen(filename, "r");
 	if (file == NULL) {
 		fprintf(stderr, "%s\n", MSG_FILE_NOT_FOUND);
-		return ERR_FILE_NOT_FOUND;
+		return NULL;
 	}
 
 	while (1) {
 		buffer = (char*) malloc(BUFFSIZE * sizeof(char));
 		if (buffer == NULL) {
 			fprintf(stderr, "%s\n", MSG_MALLOC);
-			return ERR_MALLOC;
+			return NULL;
 		}
 		validToken = 0; // assume invalid until told otherwise
 		for (int i = 0; i < BUFFSIZE; i++) {
@@ -75,7 +75,7 @@ int parse(char* filename) {
 			if (c == ' ') {
 				if (i == 0) {
 					fprintf(stderr, "%s\n", MSG_LINE_STARTS_WITH_SPACE);
-					return ERR_LINE_STARTS_WITH_SPACE;
+					return NULL;
 				}
 				buffer[i] = '\0';
 				validToken = 1;
@@ -83,8 +83,9 @@ int parse(char* filename) {
 			}
 
 			if (c == EOF) {
-				if (i == 0) {
-					return 0;
+				if (i == 0) { // Done with the method
+					fclose(file); // TODO check return value
+					return tib->targets;
 				}
 				buffer[i] = '\0';
 				validToken = 1;
@@ -96,11 +97,8 @@ int parse(char* filename) {
 
 		if (!validToken) {
 			fprintf(stderr, "%s\n", MSG_TOKEN_TOO_LONG);
-			return ERR_TOKEN_TOO_LONG;
+			return NULL;
 		}
 		processToken(buffer, -1);
-	}
-
-	fclose(file);
-	return 0;
+	} // end infinite while
 }

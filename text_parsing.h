@@ -4,5 +4,10 @@
 
 #ifndef TEXT_PARSING_C
 #define TEXT_PARSING_C
-int parse(char* filename);
+typedef struct TargetInfoBuilder {
+	TargetInfo** targets; // array of pointers to targets
+	int MAX_CAPACITY; // length of targets array
+	int currentIndex; // index of the current target
+} TargetInfoBuilder;
+TargetInfo** parse(char* filename);
 #endif
