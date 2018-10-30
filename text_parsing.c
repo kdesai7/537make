@@ -11,7 +11,8 @@
 
 static const int TARGET = 0; // the name of the target
 static const int DEPENDENCY = 1; // a dependency of some target
-static const int COMMAND = 2; // the command to execute the target
+static const int COMMAND = 2; // beginning of new command to execute the target
+static const int ARGUMENT = 3; // argument to a command
 
 static const char* MSG_MALLOC = "Malloc failed";
 static const char* MSG_FILE_NOT_FOUND = "File not found";
@@ -28,7 +29,11 @@ static const int ERR_INVALID_TOKEN_TYPE = 1;
  *
  */
 int processToken(char* token, int type) {
-	if (type != TARGET && type != DEPENDENCY && type != COMMAND) { // invalid
+	if (type != TARGET
+		&& type != DEPENDENCY
+		&& type != COMMAND
+		&& type != ARGUMENT
+	) { // invalid
 		fprintf(stderr, "Invalid token type\n");
 		return ERR_INVALID_TOKEN_TYPE;
 	}
