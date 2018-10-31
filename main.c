@@ -5,6 +5,7 @@
 #include <stdio.h>
 
 #include "build_spec_repr.h"
+#include "node.h"
 #include "text_parsing.h"
 
 const int BUFFSIZE = 256;
@@ -42,6 +43,16 @@ int main() {
 		printf("Done parsing %s\n", files[i]);
 	}
 	if (error) return 2;
+
+	// Test node creation
+	int a = 1;
+	int b = 2;
+	Node* head = newNode((void*) &a);
+	head->next = newNode((void*) &b);
+	if (*((int*) head->next->element) != b) {
+		fprintf(stderr, "Node creation not as expected\n");
+		return 3;
+	}
 
 	return 0;
 }

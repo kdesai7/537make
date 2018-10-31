@@ -10,6 +10,8 @@ FILES = build_spec_graph.c \
 		build_spec_repr.h \
 		main.c \
 		main.h \
+		node.c \
+		node.h \
 		proc_creation_prog_exe.c \
 		proc_creation_prog_exe.h \
 		text_parsing.c \
@@ -27,10 +29,10 @@ NORMAL = \e[0m
 LIGHT_GREEN = \e[92m
 
 # the -g flag at all gcc compilation stages ensures that you can use gdb to debug your code
-$(EXE): main.o build_spec_graph.o text_parsing.o build_spec_repr.o proc_creation_prog_exe.o
-	$(CC) -g -o $(EXE) main.o build_spec_graph.o text_parsing.o build_spec_repr.o proc_creation_prog_exe.o $(LIBS)
+$(EXE): main.o build_spec_graph.o text_parsing.o build_spec_repr.o proc_creation_prog_exe.o node.o
+	$(CC) -g -o $(EXE) main.o build_spec_graph.o text_parsing.o build_spec_repr.o proc_creation_prog_exe.o node.o $(LIBS)
 
-main.o: main.c build_spec_graph.h text_parsing.h build_spec_repr.h proc_creation_prog_exe.h
+main.o: main.c build_spec_graph.h text_parsing.h build_spec_repr.h proc_creation_prog_exe.h node.h
 	$(CC) -g $(WARNING_FLAGS) -c main.c
 
 build_spec_graph.o: build_spec_graph.c build_spec_graph.h
@@ -44,6 +46,9 @@ build_spec_repr.o: build_spec_repr.c build_spec_repr.h main.h
 
 proc_creation_prog_exe.o: proc_creation_prog_exe.c proc_creation_prog_exe.h
 	$(CC) -g $(WARNING_FLAGS) -c proc_creation_prog_exe.c
+
+node.o: node.c node.h
+	$(CC) -g $(WARNING_FLAGS) -c node.c
 
 # the -f flag for rm ensures that clean doesn't fail if file to be deleted doesn't exist
 clean:
