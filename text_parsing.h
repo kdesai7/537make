@@ -5,5 +5,5 @@
 #ifndef TEXT_PARSING_C
 #define TEXT_PARSING_C
 #include "build_spec_repr.h"
-TargetInfo** parse(char* filename);
+Node* parse(char* filename);
 #endif

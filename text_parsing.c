@@ -42,7 +42,7 @@ int processLine(TargetInfoBuilder* tib, char* line, int type) {
 	return 0;
 }
 
-TargetInfo** parse(char* filename) {
+Node* parse(char* filename) {
 	TargetInfoBuilder* tib = newTargetInfoBuilder(MAX_TARGETS);
 
 	FILE* file;

@@ -23,30 +23,27 @@ TargetInfo* newTargetInfo() {
 		fprintf(stderr, "malloc for name failed\n");
 		return NULL;
 	}
-	t->cmds = (char***) malloc(MAX_CMD_COUNT * sizeof(char**));
+	t->cmds = (Node*) malloc(sizeof(Node));
 	if (t->cmds == NULL) {
 		fprintf(stderr, "malloc for cmds failed\n");
 		return NULL;
 	}
-	t->deps = (char**) malloc(MAX_DEP_COUNT * sizeof(char*));
+	t->deps = (Node*) malloc(sizeof(Node));
 	if (t->deps == NULL) {
-		fprintf(stderr, "malloc for deps info failed\n");
+		fprintf(stderr, "malloc for deps failed\n");
 		return NULL;
 	}
 
 	return t;
 }
 
-TargetInfoBuilder* newTargetInfoBuilder(int capacity) {
+TargetInfoBuilder* newTargetInfoBuilder() {
 	TargetInfoBuilder* t =
 		(TargetInfoBuilder*) malloc(sizeof(TargetInfoBuilder));
-	t->targets = (TargetInfo**) malloc(capacity * sizeof(TargetInfo*));
-	t->MAX_CAPACITY = capacity;
-	t->targetIndex = 0;
+	t->targets = (Node*) malloc(sizeof(Node));
 	return t;
 }
 
 int addNewTarget(TargetInfoBuilder* tib) {
-	tib->targetIndex++;
 	return 0;
 }

@@ -4,20 +4,19 @@
 
 #ifndef BUILD_SPEC_REPR_H
 #define BUILD_SPEC_REPR_H
+#include "node.h"
 typedef struct TargetInfo {
 	char* name;
-	char*** cmds;
-	char** deps;
+	Node* cmds; // each element is an array of strings, char**
+	Node* deps; // each element is a string, char*
 } TargetInfo;
 
 typedef struct TargetInfoBuilder {
-	TargetInfo** targets; // array of pointers to targets
-	int MAX_CAPACITY; // length of targets array
-	int targetIndex; // index of the current target
+	Node* targets; // each element is a TargetInfo*
 } TargetInfoBuilder;
 
 TargetInfo* newTargetInfo();
-TargetInfoBuilder* newTargetInfoBuilder(int capacity);
+TargetInfoBuilder* newTargetInfoBuilder();
 int addNewTarget(TargetInfoBuilder* tib);
 #endif
 
