@@ -28,9 +28,10 @@ static const int ERR_INVALID_TOKEN_TYPE = 1;
  * Returns 0 on success, nonzero on error.
  *
  */
-int processToken(char* token, int type) {
-	if (type != TARGET
-		&& type != DEPENDENCY
+int processToken(TargetInfoBuilder* tib, char* token, int type) {
+	if (type == TARGET) {
+		addNewTarget(tib);
+	} else if (type != DEPENDENCY
 		&& type != COMMAND
 		&& type != ARGUMENT
 	) { // invalid
@@ -39,15 +40,6 @@ int processToken(char* token, int type) {
 	}
 	printf("%s\n", token);
 	return 0;
-}
-
-TargetInfoBuilder* newTargetInfoBuilder(int capacity) {
-	TargetInfoBuilder* t =
-		(TargetInfoBuilder*) malloc(sizeof(TargetInfoBuilder));
-	t->targets = (TargetInfo**) malloc(capacity * sizeof(TargetInfo*));
-	t->MAX_CAPACITY = capacity;
-	t->currentIndex = 0;
-	return t;
 }
 
 TargetInfo** parse(char* filename) {
@@ -115,6 +107,6 @@ TargetInfo** parse(char* filename) {
 			fprintf(stderr, "%s\n", MSG_TOKEN_TOO_LONG);
 			return NULL;
 		}
-		processToken(buffer, -1);
+		processToken(tib, buffer, TARGET);
 	} // end infinite while
 }

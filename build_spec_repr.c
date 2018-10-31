@@ -6,8 +6,9 @@
 #include <stdlib.h>
 
 
-#include "main.h"
 #include "build_spec_repr.h"
+#include "main.h"
+#include "text_parsing.h"
 
 TargetInfo* newTargetInfo() {
 	TargetInfo* t;
@@ -34,4 +35,18 @@ TargetInfo* newTargetInfo() {
 	}
 
 	return t;
+}
+
+TargetInfoBuilder* newTargetInfoBuilder(int capacity) {
+	TargetInfoBuilder* t =
+		(TargetInfoBuilder*) malloc(sizeof(TargetInfoBuilder));
+	t->targets = (TargetInfo**) malloc(capacity * sizeof(TargetInfo*));
+	t->MAX_CAPACITY = capacity;
+	t->targetIndex = 0;
+	return t;
+}
+
+int addNewTarget(TargetInfoBuilder* tib) {
+	tib->targetIndex++;
+	return 0;
 }
