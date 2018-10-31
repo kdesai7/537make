@@ -33,3 +33,16 @@ int append(Node* head, void* element) {
 	curr->next = node;
 	return 0;
 }
+
+/**
+ * Returns the element at the given 0-based index relative from the head
+ * Returns NULL on failure
+ */
+Node* get(Node* head, int index) {
+	Node* curr = head;
+	for (int i = 0; i < index; i++) {
+		if (curr == NULL) return NULL;
+		curr = curr->next;
+	}
+	return curr;
+}

@@ -47,12 +47,17 @@ int main() {
 	// Test node creation
 	int a = 1;
 	int b = 2;
+	int c = 3;
 	Node* head = newNode((void*) &a);
 	append(head, &b);
-	if (*((int*) head->next->element) != b) {
+	append(head, &a);
+	append(head, &c);
+	Node* end = get(head, 3);
+	int actual = *((int*) end->element);
+	if (actual != c) { // if failure
 		fprintf(stderr, "Node creation not as expected\n");
 		return 3;
-	} else {
+	} else { // if success
 		printf("Node creation successful\n");
 	}
 

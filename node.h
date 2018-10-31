@@ -9,4 +9,5 @@ typedef struct Node {
 } Node;
 Node* newNode(void* element);
 int append(Node* head, void* element);
+Node* get(Node* head, int index);
 #endif
