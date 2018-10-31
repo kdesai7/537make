@@ -48,10 +48,12 @@ int main() {
 	int a = 1;
 	int b = 2;
 	Node* head = newNode((void*) &a);
-	head->next = newNode((void*) &b);
+	append(head, &b);
 	if (*((int*) head->next->element) != b) {
 		fprintf(stderr, "Node creation not as expected\n");
 		return 3;
+	} else {
+		printf("Node creation successful\n");
 	}
 
 	return 0;

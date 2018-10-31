@@ -8,4 +8,5 @@ typedef struct Node {
 	struct Node* next;
 } Node;
 Node* newNode(void* element);
+int append(Node* head, void* element);
 #endif
