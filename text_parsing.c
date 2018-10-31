@@ -23,22 +23,22 @@ static const char* MSG_LINE_STARTS_WITH_SPACE = "Line starts with space";
 static const int ERR_INVALID_TOKEN_TYPE = 1;
 
 /**
- * Adds the given token to the targets structure
+ * Adds the given line to the target's structure
  *
  * Returns 0 on success, nonzero on error.
  *
  */
-int processToken(TargetInfoBuilder* tib, char* token, int type) {
+int processLine(TargetInfoBuilder* tib, char* line, int type) {
 	if (type == TARGET) {
 		addNewTarget(tib);
 	} else if (type != DEPENDENCY
 		&& type != COMMAND
 		&& type != ARGUMENT
 	) { // invalid
-		fprintf(stderr, "Invalid token type\n");
+		fprintf(stderr, "Invalid line type\n");
 		return ERR_INVALID_TOKEN_TYPE;
 	}
-	printf("%s\n", token);
+	printf("%s\n", line);
 	return 0;
 }
 
@@ -46,9 +46,9 @@ TargetInfo** parse(char* filename) {
 	TargetInfoBuilder* tib = newTargetInfoBuilder(MAX_TARGETS);
 
 	FILE* file;
-	char* buffer; // stores one token at a time
+	char* buffer; // stores one line at a time
 	int c;
-	int validToken = 0; // false iff buffer overflow
+	int validLine = 0; // false iff buffer overflow
 
 	file = fopen(filename, "r");
 	if (file == NULL) {
@@ -62,7 +62,7 @@ TargetInfo** parse(char* filename) {
 			fprintf(stderr, "%s\n", MSG_MALLOC);
 			return NULL;
 		}
-		validToken = 0; // assume invalid until told otherwise
+		validLine = 0; // assume invalid until told otherwise
 		for (int i = 0; i < BUFFSIZE; i++) {
 			c = getc(file);
 			if (c == '\n') {
@@ -72,7 +72,7 @@ TargetInfo** parse(char* filename) {
 					continue;
 				} else {
 					buffer[i] = '\0';
-					validToken = 1;
+					validLine = 1;
 					break;
 				}
 			} // end 'if newline', no else needed because we continue or break
@@ -82,9 +82,6 @@ TargetInfo** parse(char* filename) {
 					fprintf(stderr, "%s\n", MSG_LINE_STARTS_WITH_SPACE);
 					return NULL;
 				}
-				buffer[i] = '\0';
-				validToken = 1;
-				break;
 			}
 
 			if (c == EOF) {
@@ -96,17 +93,17 @@ TargetInfo** parse(char* filename) {
 					return tib->targets;
 				}
 				buffer[i] = '\0';
-				validToken = 1;
+				validLine = 1;
 				return 0;
 			} // end if EOF
 
 			buffer[i] = c;
 		} // end buffer population
 
-		if (!validToken) {
+		if (!validLine) {
 			fprintf(stderr, "%s\n", MSG_TOKEN_TOO_LONG);
 			return NULL;
 		}
-		processToken(tib, buffer, TARGET);
+		processLine(tib, buffer, TARGET);
 	} // end infinite while
 }
