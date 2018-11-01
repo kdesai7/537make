@@ -44,6 +44,12 @@ int processLine(TargetInfoBuilder* tib, char* line, int type) {
 	return 0;
 }
 
+/**
+ * Make sure line is valid makefile line
+ * Line cannot start with space (Error code 1)
+ * Line cannot contain null terminators (Error code 2)
+ * Line must end with null terminator (Error code 3)
+ */
 int validateLine(char* buffer, int length) {
 	// printf("Validating >>%s<<, length %d\n", buffer, length);
 	char c = buffer[0];
@@ -61,9 +67,6 @@ int validateLine(char* buffer, int length) {
 	if (buffer[length + 1] != '\0') {
 		fprintf(stderr, "%s\n", MSG_NO_TERMINATOR);
 		return 3;
-	}
-	if (buffer[0] == '#') {
-		return -1; // just ignore the line
 	}
 	return 0;
 }
