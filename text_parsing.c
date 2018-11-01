@@ -9,11 +9,6 @@
 #include "build_spec_repr.h"
 #include "text_parsing.h"
 
-static const int TARGET = 0; // the name of the target
-static const int DEPENDENCY = 1; // a dependency of some target
-static const int COMMAND = 2; // beginning of new command to execute the target
-static const int ARGUMENT = 3; // argument to a command
-
 static const char* MSG_MALLOC = "Malloc failed";
 static const char* MSG_FILE_NOT_FOUND = "File not found";
 static const char* MSG_FILE_NOT_CLOSED = "File failed to close";
@@ -22,25 +17,22 @@ static const char* MSG_LINE_STARTS_WITH_SPACE = "Line starts with space";
 static const char* MSG_NULL_TERMINATOR = "Line contains null terminator";
 static const char* MSG_NO_TERMINATOR = "No null terminator at end of buffer";
 
-static const int ERR_INVALID_TOKEN_TYPE = 1;
-
 /**
  * Adds the given line to the target's structure
  *
- * Returns 0 on success, nonzero on error.
+ * Assumes the given line is valid
+ * 
+ * isTargetLine is truthy if it is a target line, falsy if it is a command line
  *
+ * Returns 0 on success, nonzero on error.
  */
-int processLine(TargetInfoBuilder* tib, char* line, int type) {
-	if (type == TARGET) {
+int processLine(TargetInfoBuilder* tib, char* line, int isTargetLine) {
+	if (isTargetLine) {
 		addNewTarget(tib);
-	} else if (type != DEPENDENCY
-		&& type != COMMAND
-		&& type != ARGUMENT
-	) { // invalid
-		fprintf(stderr, "Invalid line type\n");
-		return ERR_INVALID_TOKEN_TYPE;
+	} else { // it's a command line
+		// TODO add new command
 	}
-	printf("%s\n", line);
+	printf("%s\n", line); // for debugging purposes
 	return 0;
 }
 
@@ -129,12 +121,12 @@ Node* parse(char* filename) {
 		}
 
 		// ignore blank lines and comment lines
-		if (length > 0 && buffer[0] != '#') {
+		if (length > 0 && buffer[0] != '#') { // if meaningful line
 			int result = validateLine(buffer, length);
-			if (result != 0 && result != -1) {
+			if (result != 0) {
 				return NULL;
 			}
-			processLine(tib, buffer, TARGET);
+			processLine(tib, buffer, 1); // TODO determine line type
 		} else { // ignore this line, free it
 			free(buffer);
 		}
