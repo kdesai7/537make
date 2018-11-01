@@ -36,6 +36,10 @@ int processLine(TargetInfoBuilder* tib, char* line, int isTargetLine) {
 	return 0;
 }
 
+int isWhitespaceOrColon(char c) {
+	return c == ':' || c == ' ' || c == '\t';
+}
+
 /**
  * Make sure line is valid makefile line and returns line type
  * Line cannot start with space (Error code -1)
@@ -45,19 +49,39 @@ int processLine(TargetInfoBuilder* tib, char* line, int isTargetLine) {
  */
 int determineLineType(char* buffer, int length) {
 	// printf("Validating >>%s<<, length %d\n", buffer, length);
+	int expectingTargetLine = 0;
+	int foundColon = 0; // whether we have encountered a colon yet
+	int foundWhitespace = 0; // whether we have encountered whitespace yet
 	char c = buffer[0];
 	if (c == ' ') {
 		fprintf(stderr, "%s\n", MSG_LINE_STARTS_WITH_SPACE);
 		return -1; // invalid Line
 	}
+	expectingTargetLine = (c == '\t') ? 0 : 1;
 	for (int i = 0; i < length; i++) {
 		c = buffer[i];
 		if (c == '\0') {
 			fprintf(stderr, "%s\n", MSG_NULL_TERMINATOR);
 			return -1;
 		}
+		if (expectingTargetLine) {
+			if (foundColon && c == ':') { // if we find a second colon
+				fprintf(stderr, "%s\n", "Target line has multiple colons");
+				return -1;
+			}
+			// two words before colon makes something invalid
+			if (foundWhitespace && !foundColon && !isWhitespaceOrColon(c)) {
+				fprintf(stderr, "%s\n", "Multiple words before colon");
+				return -1;
+			}
+
+			if (c == ':') foundColon = 1;
+			if (c == ' ' || c == '\t') foundWhitespace = 1;
+		} else { // expecting command line
+			// TODO
+		}
     }
-	if (buffer[length + 1] != '\0') {
+	if (buffer[length] != '\0') {
 		fprintf(stderr, "%s\n", MSG_NO_TERMINATOR);
 		return -1;
 	}
@@ -109,7 +133,7 @@ Node* parse(char* filename) {
 				}
 				buffer[i] = '\0';
 				validBuffer = 1;
-				length = i - 1;
+				length = i;
 				break;
 			} // end of 'if end of line'
 

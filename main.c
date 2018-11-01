@@ -10,14 +10,15 @@
 
 const int BUFFSIZE = 256;
 
-const int NUM_FILES = 3;
+const int NUM_BAD_FILES = 3;
+char* GOOD_FILE_NAME = "in.txt";
 
 int main() {
 	int error = 0;
-	char* files[NUM_FILES];
-	files[0] = "in.txt";
-	files[1] = "spaces.txt";
-	files[2] = "blank.txt";
+	char* badFiles[NUM_BAD_FILES];
+	badFiles[0] = "spaces.txt";
+	badFiles[1] = "multWords.txt";
+	badFiles[2] = "twoColons.txt";
 
 	TargetInfo* t = newTargetInfo();
 	if (t == NULL) {
@@ -25,18 +26,20 @@ int main() {
 		return 1;
 	}
 
-	for (int i = 0; i < NUM_FILES; i++) {
-		printf("Parsing %s\n", files[i]);
-		if (i == 1) {
-			printf("This should fail...\n");
+	// Parse good file
+	if (parse(GOOD_FILE_NAME) == NULL) {
+		fprintf(stderr, "Failed to parse %s\n", GOOD_FILE_NAME);
+		return -1;
+	}
+
+	// Parse bad files
+	for (int i = 0; i < NUM_BAD_FILES; i++) {
+		printf("Parsing %s\n", badFiles[i]);
+		if (parse(badFiles[i]) != NULL) {
+			fprintf(stderr, "Parsing of %s did not fail when it was supposed to fail\n", badFiles[i]);
+			error = 1;
 		}
-		if (parse(files[i]) == NULL) {
-			fprintf(stderr, "Parsing of %s failed\n", files[i]);
-			if (i != 1) { // i == 1 should fail, parsing spaces should fail
-				error = 1;
-			}
-		}
-		printf("Done parsing %s\n", files[i]);
+		printf("Done parsing %s\n", badFiles[i]);
 	}
 	if (error) return 2;
 
