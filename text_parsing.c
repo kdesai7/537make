@@ -32,7 +32,9 @@ int processLine(TargetInfoBuilder* tib, char* line, int isTargetLine) {
 	} else { // it's a command line
 		// TODO add new command
 	}
-	printf("%s\n", line); // for debugging purposes
+
+	char* lineType = isTargetLine ? "TARG" : "CMDS";
+	printf("%s:%s\n", lineType, line); // for debugging purposes
 	return 0;
 }
 
@@ -91,11 +93,13 @@ int determineLineType(char* buffer, int length, int firstMeaningfulLine) {
 			if (c == ' ' || c == '\t') foundWhitespace = 1;
 		}
     }
+
 	if (buffer[length] != '\0') {
 		fprintf(stderr, "%s\n", MSG_NO_TERMINATOR);
 		return -1;
 	}
-	return 1; // TODO sometimes return 0
+
+	return expectingTargetLine ? 1 : 0;
 }
 
 /**

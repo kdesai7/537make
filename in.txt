@@ -1,6 +1,8 @@
 # Here is a comment, please ignore me!
 # valid
 all: main.o
+	ls /proc/ -al
+	ls .
 spaces   :
 tabs		:
 both	 	 	:
