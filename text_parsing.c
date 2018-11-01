@@ -19,6 +19,8 @@ static const char* MSG_FILE_NOT_FOUND = "File not found";
 static const char* MSG_FILE_NOT_CLOSED = "File failed to close";
 static const char* MSG_TOKEN_TOO_LONG = "Token too long";
 static const char* MSG_LINE_STARTS_WITH_SPACE = "Line starts with space";
+static const char* MSG_NULL_TERMINATOR = "Line contains null terminator";
+static const char* MSG_NO_TERMINATOR = "No null terminator at end of buffer";
 
 static const int ERR_INVALID_TOKEN_TYPE = 1;
 
@@ -42,13 +44,42 @@ int processLine(TargetInfoBuilder* tib, char* line, int type) {
 	return 0;
 }
 
+int validateLine(char* buffer, int length) {
+	// printf("Validating >>%s<<, length %d\n", buffer, length);
+	char c = buffer[0];
+	if (c == ' ') {
+		fprintf(stderr, "%s\n", MSG_LINE_STARTS_WITH_SPACE);
+		return 1;
+	}
+	for (int i = 0; i < length; i++) {
+		c = buffer[i];
+		if (c == '\0') {
+			fprintf(stderr, "%s\n", MSG_NULL_TERMINATOR);
+			return 2;
+		}
+	}
+	if (buffer[length + 1] != '\0') {
+		fprintf(stderr, "%s\n", MSG_NO_TERMINATOR);
+		return 3;
+	}
+	if (buffer[0] == '#') {
+		return -1; // just ignore the line
+	}
+	return 0;
+}
+
+/**
+ * Parse the given file, return a linked list of TargetInfo elements
+ * Return NULL on failure
+ */
 Node* parse(char* filename) {
 	TargetInfoBuilder* tib = newTargetInfoBuilder(MAX_TARGETS);
 
 	FILE* file;
 	char* buffer; // stores one line at a time
 	int c;
-	int validLine = 0; // false iff buffer overflow
+	int validBuffer = 0; // false iff buffer overflow
+	int length = 0;
 
 	file = fopen(filename, "r");
 	if (file == NULL) {
@@ -57,53 +88,50 @@ Node* parse(char* filename) {
 	}
 
 	while (1) {
+		// allocate the buffer
 		buffer = (char*) malloc(BUFFSIZE * sizeof(char));
 		if (buffer == NULL) {
 			fprintf(stderr, "%s\n", MSG_MALLOC);
 			return NULL;
 		}
-		validLine = 0; // assume invalid until told otherwise
+
+		validBuffer = 0; // assume line invalid until told otherwise
+
+		// populate the buffer
 		for (int i = 0; i < BUFFSIZE; i++) {
 			c = getc(file);
-			if (c == '\n') {
-				if (i == 0)  { // we've encountered a blank line
-					i = -1; // go back to the first element of the buffer
-					printf("Empty line\n");
-					continue;
-				} else {
-					buffer[i] = '\0';
-					validLine = 1;
-					break;
-				}
-			} // end 'if newline', no else needed because we continue or break
 
-			if (c == ' ') {
-				if (i == 0) {
-					fprintf(stderr, "%s\n", MSG_LINE_STARTS_WITH_SPACE);
-					return NULL;
-				}
-			}
-
-			if (c == EOF) {
-				if (i == 0) { // Done with the method
+			if (c == EOF || c == '\n') { // end of line
+				if (c == EOF && i == 0) { // end of file
 					if (fclose(file)) {
 						fprintf(stderr, "%s\n", MSG_FILE_NOT_CLOSED);
 						return NULL;
 					}
-					return tib->targets;
+					return tib->targets; // return the targets
 				}
 				buffer[i] = '\0';
-				validLine = 1;
-				return 0;
-			} // end if EOF
+				validBuffer = 1;
+				length = i - 1;
+				break;
+			} // end of 'if end of line'
 
 			buffer[i] = c;
 		} // end buffer population
 
-		if (!validLine) {
+		if (!validBuffer) {
 			fprintf(stderr, "%s\n", MSG_TOKEN_TOO_LONG);
 			return NULL;
 		}
-		processLine(tib, buffer, TARGET);
+
+		// ignore blank lines and comment lines
+		if (length > 0 && buffer[0] != '#') {
+			int result = validateLine(buffer, length);
+			if (result != 0 && result != -1) {
+				return NULL;
+			}
+			processLine(tib, buffer, TARGET);
+		} else { // ignore this line, free it
+			free(buffer);
+		}
 	} // end infinite while
 }
