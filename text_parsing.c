@@ -17,7 +17,7 @@ static const int ARGUMENT = 3; // argument to a command
 static const char* MSG_MALLOC = "Malloc failed";
 static const char* MSG_FILE_NOT_FOUND = "File not found";
 static const char* MSG_FILE_NOT_CLOSED = "File failed to close";
-static const char* MSG_TOKEN_TOO_LONG = "Token too long";
+static const char* MSG_LINE_TOO_LONG = "Token too long";
 static const char* MSG_LINE_STARTS_WITH_SPACE = "Line starts with space";
 static const char* MSG_NULL_TERMINATOR = "Line contains null terminator";
 static const char* MSG_NO_TERMINATOR = "No null terminator at end of buffer";
@@ -84,12 +84,14 @@ Node* parse(char* filename) {
 	int validBuffer = 0; // false iff buffer overflow
 	int length = 0;
 
+	// Open file
 	file = fopen(filename, "r");
 	if (file == NULL) {
 		fprintf(stderr, "%s\n", MSG_FILE_NOT_FOUND);
 		return NULL;
 	}
 
+	// Parse the file
 	while (1) {
 		// allocate the buffer
 		buffer = (char*) malloc(BUFFSIZE * sizeof(char));
@@ -100,7 +102,7 @@ Node* parse(char* filename) {
 
 		validBuffer = 0; // assume line invalid until told otherwise
 
-		// populate the buffer
+		// populate the buffer for one line
 		for (int i = 0; i < BUFFSIZE; i++) {
 			c = getc(file);
 
@@ -122,7 +124,7 @@ Node* parse(char* filename) {
 		} // end buffer population
 
 		if (!validBuffer) {
-			fprintf(stderr, "%s\n", MSG_TOKEN_TOO_LONG);
+			fprintf(stderr, "%s\n", MSG_LINE_TOO_LONG);
 			return NULL;
 		}
 
