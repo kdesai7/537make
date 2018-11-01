@@ -58,6 +58,12 @@ int determineLineType(char* buffer, int length) {
 		return -1; // invalid Line
 	}
 	expectingTargetLine = (c == '\t') ? 0 : 1;
+
+	if (!expectingTargetLine && (buffer[1] == '\t' || buffer[1] == ' ')) {
+		fprintf(stderr, "%s\n", "Command line has too much whitespace");
+		return -1;
+	}
+
 	for (int i = 0; i < length; i++) {
 		c = buffer[i];
 		if (c == '\0') {
@@ -77,8 +83,6 @@ int determineLineType(char* buffer, int length) {
 
 			if (c == ':') foundColon = 1;
 			if (c == ' ' || c == '\t') foundWhitespace = 1;
-		} else { // expecting command line
-			// TODO
 		}
     }
 	if (buffer[length] != '\0') {
