@@ -37,30 +37,31 @@ int processLine(TargetInfoBuilder* tib, char* line, int isTargetLine) {
 }
 
 /**
- * Make sure line is valid makefile line
- * Line cannot start with space (Error code 1)
- * Line cannot contain null terminators (Error code 2)
- * Line must end with null terminator (Error code 3)
+ * Make sure line is valid makefile line and returns line type
+ * Line cannot start with space (Error code -1)
+ * Line cannot contain null terminators (Error code -1)
+ * Line must end with null terminator (Error code -1)
+ * if target line : return 1; command line: return 0; invalid line : return -1 
  */
-int validateLine(char* buffer, int length) {
+int determineLineType(char* buffer, int length) {
 	// printf("Validating >>%s<<, length %d\n", buffer, length);
 	char c = buffer[0];
 	if (c == ' ') {
 		fprintf(stderr, "%s\n", MSG_LINE_STARTS_WITH_SPACE);
-		return 1;
+		return -1; // invalid Line
 	}
 	for (int i = 0; i < length; i++) {
 		c = buffer[i];
 		if (c == '\0') {
 			fprintf(stderr, "%s\n", MSG_NULL_TERMINATOR);
-			return 2;
+			return -1;
 		}
-	}
+    }
 	if (buffer[length + 1] != '\0') {
 		fprintf(stderr, "%s\n", MSG_NO_TERMINATOR);
-		return 3;
+		return -1;
 	}
-	return 0;
+	return 1; // TODO sometimes return 0
 }
 
 /**
@@ -122,11 +123,11 @@ Node* parse(char* filename) {
 
 		// ignore blank lines and comment lines
 		if (length > 0 && buffer[0] != '#') { // if meaningful line
-			int result = validateLine(buffer, length);
-			if (result != 0) {
+			int result = determineLineType(buffer, length);
+			if (result == -1) { // line is invalid
 				return NULL;
 			}
-			processLine(tib, buffer, 1); // TODO determine line type
+			processLine(tib, buffer, result);
 		} else { // ignore this line, free it
 			free(buffer);
 		}
