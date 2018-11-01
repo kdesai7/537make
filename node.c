@@ -7,6 +7,9 @@
 
 #include "node.h"
 
+/**
+ * Creates a new node with the given element
+ */
 Node* newNode(void* element) {
 	Node* node = (Node*) malloc(sizeof(Node));
 	if (node == NULL) {
