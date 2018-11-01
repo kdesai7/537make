@@ -109,8 +109,8 @@ Node* parse(char* filename) {
 	char* buffer; // stores one line at a time
 	int c;
 	int validBuffer = 0; // false iff buffer overflow
-	int length = 0;
-	int firstMeaningfulLine = 1;
+	int length = 0; 
+	int firstMeaningfulLine = 1; // truthy if parsing first meaningful line
 
 	// Open file
 	file = fopen(filename, "r");
