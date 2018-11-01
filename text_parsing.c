@@ -47,7 +47,7 @@ int isWhitespaceOrColon(char c) {
  * Line must end with null terminator (Error code -1)
  * if target line : return 1; command line: return 0; invalid line : return -1 
  */
-int determineLineType(char* buffer, int length) {
+int determineLineType(char* buffer, int length, int firstMeaningfulLine) {
 	// printf("Validating >>%s<<, length %d\n", buffer, length);
 	int expectingTargetLine = 0;
 	int foundColon = 0; // whether we have encountered a colon yet
@@ -57,7 +57,13 @@ int determineLineType(char* buffer, int length) {
 		fprintf(stderr, "%s\n", MSG_LINE_STARTS_WITH_SPACE);
 		return -1; // invalid Line
 	}
+
 	expectingTargetLine = (c == '\t') ? 0 : 1;
+
+	if (firstMeaningfulLine && !expectingTargetLine) {
+		fprintf(stderr, "%s\n", "First meaningful line isn't a target");
+		return -1;
+	}
 
 	if (!expectingTargetLine && (buffer[1] == '\t' || buffer[1] == ' ')) {
 		fprintf(stderr, "%s\n", "Command line has too much whitespace");
@@ -104,6 +110,7 @@ Node* parse(char* filename) {
 	int c;
 	int validBuffer = 0; // false iff buffer overflow
 	int length = 0;
+	int firstMeaningfulLine = 1;
 
 	// Open file
 	file = fopen(filename, "r");
@@ -151,7 +158,8 @@ Node* parse(char* filename) {
 
 		// ignore blank lines and comment lines
 		if (length > 0 && buffer[0] != '#') { // if meaningful line
-			int result = determineLineType(buffer, length);
+			int result = determineLineType(buffer, length, firstMeaningfulLine);
+			firstMeaningfulLine = 0;
 			if (result == -1) { // line is invalid
 				return NULL;
 			}

@@ -10,7 +10,7 @@
 
 const int BUFFSIZE = 256;
 
-const int NUM_BAD_FILES = 4;
+const int NUM_BAD_FILES = 5;
 char* GOOD_FILE_NAME = "in.txt";
 
 int main() {
@@ -20,6 +20,7 @@ int main() {
 	badFiles[1] = "multWords.txt";
 	badFiles[2] = "twoColons.txt";
 	badFiles[3] = "cmdWhitespace.txt";
+	badFiles[4] = "meaningful.txt";
 
 	TargetInfo* t = newTargetInfo();
 	if (t == NULL) {
