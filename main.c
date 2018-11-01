@@ -9,10 +9,6 @@
 #include "text_parsing.h"
 
 const int BUFFSIZE = 256;
-const int MAX_ARG_COUNT = 128;
-const int MAX_CMD_COUNT = 128;
-const int MAX_DEP_COUNT = 128;
-const int MAX_TARGETS = 256;
 
 const int NUM_FILES = 3;
 

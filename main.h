@@ -4,8 +4,4 @@
 #ifndef MAIN_H
 #define MAIN_H
 extern const int BUFFSIZE;	// per string in targetinfo
-extern const int MAX_ARG_COUNT;
-extern const int MAX_DEP_COUNT;
-extern const int MAX_CMD_COUNT;
-extern const int MAX_TARGETS;
 #endif

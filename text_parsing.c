@@ -76,7 +76,7 @@ int validateLine(char* buffer, int length) {
  * Return NULL on failure
  */
 Node* parse(char* filename) {
-	TargetInfoBuilder* tib = newTargetInfoBuilder(MAX_TARGETS);
+	TargetInfoBuilder* tib = newTargetInfoBuilder();
 
 	FILE* file;
 	char* buffer; // stores one line at a time
