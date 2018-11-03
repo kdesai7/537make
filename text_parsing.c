@@ -4,6 +4,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "main.h"
 #include "build_spec_repr.h"
@@ -37,6 +38,62 @@ int processLine(TargetInfoBuilder* tib, char* line, int isTargetLine) {
 	printf("%s:%s\n", lineType, line); // for debugging purposes
 	return 0;
 }
+
+/**
+ * Scan the line to differentiate delimiter before tokenizing
+ *
+ * Returns the length of the entire token
+ *
+ * return -1 when reached end of the string, -2 on error
+ *
+ */
+int scanLine(char* line, int length, int*start, int* end, const char delim) {
+	if (*end == length) {
+		return -1;
+	}
+	for (*end = *start ; *end <= length; *end +=1) {
+		if (line[*end] == delim || (*end == length)) {
+			return *end - *start; // length of the token
+		}
+	}
+	return -2;
+}
+
+/**
+ * Tokenize the given line based on the target / command line validation
+ *
+ * Assumes the given line is valid
+ *
+ * isTargetLine is truthy if it is a target line, falsy if it is a command line
+ *
+ * Returns 0 on success, nonzero on error
+ */
+int tokenize(char* line, int length, int isTargetLine) {
+	int start = 0, end = 0;
+	char* token;
+	char* tokenLine;	
+	while (scanLine(line, length, &start, &end, ' ') >= 0) {
+		// while scanning through whitespaces
+		int tokenStart = 0, tokenEnd = 0;
+		while (isTargetLine &&
+			scanLine(line+start, end-start, &tokenStart, &tokenEnd, ':') >= 0) {
+			//TODO currently only detect the targetline 
+			token = (char *) malloc((tokenEnd-tokenStart +1) * sizeof(char));
+			tokenLine = strncpy(token, line+start+tokenStart, tokenEnd-tokenStart);
+			token[tokenEnd-tokenStart] = '\0';
+			if (tokenEnd-tokenStart == 0) {
+				printf("this is whitespace"); 
+				//TODO ignore whitespace when adding to the array of tokens
+			}
+			printf("TokenLength: %d %s\n", tokenEnd-tokenStart, tokenLine);
+			tokenStart = tokenEnd +1;
+			free(token);
+		}
+		start = end + 1;
+	}
+	return 0;
+}
+
 
 int isWhitespaceOrColon(char c) {
 	return c == ':' || c == ' ' || c == '\t';
@@ -168,6 +225,7 @@ Node* parse(char* filename) {
 				return NULL;
 			}
 			processLine(tib, buffer, result);
+			tokenize(buffer, length, result);
 		} else { // ignore this line, free it
 			free(buffer);
 		}
