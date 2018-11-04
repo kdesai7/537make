@@ -5,8 +5,8 @@
 #define BUILD_SPEC_GRAPH_H
 #include "node.h"
 typedef struct Graph {
-	int*** matrix; // pointer to 2D array of "bools"
-	int* size; // pointer to size of graph
+	int** matrix; // 2D array of "bools"
+	int size; // number of nodes in graph
 } Graph;
 void* buildSpecGraph(Node* targetsHeader);
 #endif
