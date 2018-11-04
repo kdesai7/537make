@@ -122,7 +122,6 @@ int main(int argc, char** argv) {
 	if (testTargetInfoCreation()) return 1;
 	if (testNode()) return 3;
 
-	// Parse good file
 	if (argc > 1) {
 		filename = argv[1];
 		fileSpecified = 1;
@@ -144,7 +143,9 @@ int main(int argc, char** argv) {
 		}
 	}
 
-	printTargets(targets);
+	printTargets(targets); // for testing purposes TODO remove
+
+	buildSpecGraph(targets);
 
 	return 0;
 }

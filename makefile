@@ -45,7 +45,7 @@ $(EXE): clean main.o build_spec_graph.o text_parsing.o build_spec_repr.o proc_cr
 main.o: main.c build_spec_graph.h text_parsing.h build_spec_repr.h proc_creation_prog_exe.h node.h
 	$(CC) -g $(WARNING_FLAGS) -c main.c
 
-build_spec_graph.o: build_spec_graph.c build_spec_graph.h
+build_spec_graph.o: build_spec_graph.c build_spec_graph.h node.h
 	$(CC) -g $(WARNING_FLAGS) -c build_spec_graph.c
 
 text_parsing.o: text_parsing.c text_parsing.h build_spec_repr.h main.h
