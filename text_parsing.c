@@ -19,79 +19,151 @@ static const char* MSG_NULL_TERMINATOR = "Line contains null terminator";
 static const char* MSG_NO_TERMINATOR = "No null terminator at end of buffer";
 
 /**
+ * Prints out a tokenized line for debugging purposes
+ * Starts with line type surrounded by <>, either TARG or CMDS, followed by tab
+ * Then prints out each token in line separated by one space
+ * Prints a colon immediately following the target name
+ * Prints out an extra tab before the command
+ * e.g. <TARG>\tall: dep1.c dep2.c
+ * e.g. <CMDS>\t\t ls /proc/ -al
+ */
+void printLine(char** line, int isTargetLine) {
+	if (isTargetLine) {
+		printf("<TARG>\t");
+		printf("%s:", line[0]);
+		for (int i = 1; line[i] != NULL; i++) {
+			printf(" %s", line[i]);
+		}
+	} else { // is command line
+		printf("<CMDS>\t");
+		printf("\t");
+		for (int i = 0; line[i] != NULL; i++) {
+			if (i != 0) {
+				printf(" ");
+			}
+			printf("%s", line[i]);
+		}
+	}
+	printf("\n");
+}
+
+/**
  * Adds the given line to the target's structure
  *
  * Assumes the given line is valid
- * 
+ *
  * isTargetLine is truthy if it is a target line, falsy if it is a command line
  *
  * Returns 0 on success, nonzero on error.
  */
-int processLine(TargetInfoBuilder* tib, char* line, int isTargetLine) {
+int processLine(TargetInfoBuilder* tib, char** line, int isTargetLine) {
 	if (isTargetLine) {
-		addNewTarget(tib);
+		// addNewTarget(tib, line); // TODO once nodes are updated
 	} else { // it's a command line
 		// TODO add new command
 	}
 
-	char* lineType = isTargetLine ? "TARG" : "CMDS";
-	printf("%s:%s\n", lineType, line); // for debugging purposes
+	printLine(line, isTargetLine);
+
 	return 0;
 }
 
 /**
- * Scan the line to differentiate delimiter before tokenizing
- *
- * Returns the length of the entire token
- *
- * return -1 when reached end of the string, -2 on error
- *
+ * Populates token with a subset of elements from line
+ * Up to but excluding the element at endIndex
+ * populateToken(token, "Hello, world!", 0, 5) --> token = "Hello"
+ * Appends '\0' to end of token
+ * Returns 0 on success, CRASHES AND BURNS on failure :)
  */
-int scanLine(char* line, int length, int*start, int* end, const char delim) {
-	if (*end == length) {
-		return -1;
+char* populateToken(char* line, int startIndex, int endIndex) {
+	char* token = (char*) malloc ((endIndex - startIndex) * sizeof(char));
+	if (token == NULL) {
+		fprintf(stderr, "ERROR: malloc failed\n");
+		return NULL;
 	}
-	for (*end = *start ; *end <= length; *end +=1) {
-		if (line[*end] == delim || (*end == length)) {
-			return *end - *start; // length of the token
-		}
+
+	int length = endIndex - startIndex;
+	for (int i = 0; i < length; i++) {
+		token[i] = line[i + startIndex];
 	}
-	return -2;
+	token[length + 1] = '\0';
+	return token;
 }
 
 /**
- * Tokenize the given line based on the target / command line validation
- *
- * Assumes the given line is valid
- *
- * isTargetLine is truthy if it is a target line, falsy if it is a command line
- *
- * Returns 0 on success, nonzero on error
+ * Tokenizes the line separated by whitespace
+ * Ignores colons in target lines
+ * Final element is a NULL pointer
+ * Assumes at least one token on this line
+ * Return NULL on failure, valid pointer on success
  */
-int tokenize(char* line, int length, int isTargetLine) {
-	int start = 0, end = 0;
-	char* token;
-	char* tokenLine;	
-	while (scanLine(line, length, &start, &end, ' ') >= 0) {
-		// while scanning through whitespaces
-		int tokenStart = 0, tokenEnd = 0;
-		while (isTargetLine &&
-			scanLine(line+start, end-start, &tokenStart, &tokenEnd, ':') >= 0) {
-			//TODO currently only detect the targetline 
-			token = (char *) malloc((tokenEnd-tokenStart +1) * sizeof(char));
-			tokenLine = strncpy(token, line+start+tokenStart, tokenEnd-tokenStart);
-			token[tokenEnd-tokenStart] = '\0';
-			if (tokenEnd-tokenStart == 0) {
-				printf("this is whitespace"); 
-				//TODO ignore whitespace when adding to the array of tokens
+char** tokenize(char* line, int isTargetLine) {
+	int numElements = 0;
+	int lastCharDelimiter;
+	char c;
+	char** tokenizedLine;
+	int startIndex = 0;
+	int tokenLength = 0;
+	int tokenIndex = 0;
+
+	// Scan through once to find the number of elements
+	lastCharDelimiter = 1; // before the line is ignored
+	for (int i = 0; line[i] != '\0'; i++) {
+		c = line[i];
+		if ((isTargetLine && c == ':') // colon only delimit target line tokens
+			|| c == ' ' // spaces delimit both line types
+			|| c == '\t' // tabs delimit both line types
+		) { // so if we've found a delimiter char for this line
+			if (!lastCharDelimiter) {
+				numElements++;
 			}
-			printf("TokenLength: %d %s\n", tokenEnd-tokenStart, tokenLine);
-			tokenStart = tokenEnd +1;
-			free(token);
+			lastCharDelimiter = 1;
+		} else { // found non-delimiter
+			lastCharDelimiter = 0;
 		}
-		start = end + 1;
 	}
-	return 0;
+	if (!lastCharDelimiter) { // didn't record last token
+		numElements++;
+	}
+
+	// Set up array for tokenized line
+	tokenizedLine = (char**) malloc((numElements + 1) * sizeof(char*));
+	if (tokenizedLine == NULL) {
+		fprintf(stderr, "ERROR: malloc failed\n");
+		return NULL;
+	}
+
+	// Scan again to populate each token
+	lastCharDelimiter = 1; // ignore emptiness at beginning of line
+	for (int i = 0; line[i] != '\0'; i++) {
+		c = line[i];
+		if ((isTargetLine && c == ':') // colon only delimit target line tokens
+			|| c == ' ' // spaces delimit both line types
+			|| c == '\t' // tabs delimit both line types
+		) { // so if we've found a delimiter char for this line
+			if (!lastCharDelimiter) { // last char was not delimiter
+				// add new token to array
+				tokenizedLine[tokenIndex] = populateToken(line, startIndex, i);
+				tokenLength = 0;
+				tokenIndex++;
+			}
+			lastCharDelimiter = 1;
+		} else { // found non-delimiter
+			if (lastCharDelimiter) { // following delimiter
+				startIndex = i;
+			}
+			tokenLength++;
+			lastCharDelimiter = 0;
+		}
+	}
+	if (!lastCharDelimiter) {
+		int endIndex = startIndex + tokenLength;
+		tokenizedLine[tokenIndex] = populateToken(line, startIndex, endIndex);
+	}
+
+	tokenizedLine[numElements] = NULL; // signify end of array
+
+	return tokenizedLine;
 }
 
 
@@ -104,10 +176,9 @@ int isWhitespaceOrColon(char c) {
  * Line cannot start with space (Error code -1)
  * Line cannot contain null terminators (Error code -1)
  * Line must end with null terminator (Error code -1)
- * if target line : return 1; command line: return 0; invalid line : return -1 
+ * if target line : return 1; command line: return 0; invalid line : return -1
  */
 int determineLineType(char* buffer, int length, int firstMeaningfulLine) {
-	// printf("Validating >>%s<<, length %d\n", buffer, length);
 	int expectingTargetLine = 0;
 	int foundColon = 0; // whether we have encountered a colon yet
 	int foundWhitespace = 0; // whether we have encountered whitespace yet
@@ -170,7 +241,7 @@ Node* parse(char* filename) {
 	char* buffer; // stores one line at a time
 	int c;
 	int validBuffer = 0; // false iff buffer overflow
-	int length = 0; 
+	int length = 0;
 	int firstMeaningfulLine = 1; // truthy if parsing first meaningful line
 
 	// Open file
@@ -224,8 +295,8 @@ Node* parse(char* filename) {
 			if (result == -1) { // line is invalid
 				return NULL;
 			}
-			processLine(tib, buffer, result);
-			tokenize(buffer, length, result);
+			char** tokenizedLine = tokenize(buffer, result);
+			processLine(tib, tokenizedLine, result);
 		} else { // ignore this line, free it
 			free(buffer);
 		}

@@ -6,3 +6,4 @@ all: main.o
 spaces   :
 tabs		:
 both	 	 	:
+	cmdline with colon : should not be ignored
