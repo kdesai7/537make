@@ -4,6 +4,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "node.h"
 
@@ -63,4 +64,22 @@ int length(Node* header) {
 	Node* curr = header;
 	while ((curr = curr->next) != NULL) length++;
 	return length;
+}
+
+/**
+ * Returns index of given element in list
+ * Assumes given node is non-null header node
+ * Assumes element is a well-formed, non-null string
+ */
+int indexOf(Node* header, char* element) {
+	Node* curr = header;
+	int index = 0;
+	while ((curr = curr->next) != NULL) {
+		char* actual = (char*)curr->element;
+		if (!strcmp(actual, element)) {
+			return index;
+		}
+		index++;
+	}
+	return -1;
 }

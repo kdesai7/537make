@@ -3,8 +3,10 @@
 // 2,Jenny Ye,hye35,haengjung,hye35@wisc.edu,9075878315
 
 #include <stdio.h>
+#include <string.h>
 
 #include "build_spec_repr.h"
+#include "build_spec_graph.h"
 #include "node.h"
 #include "text_parsing.h"
 
@@ -19,7 +21,11 @@ void printerr(const char* msg) {
 	fprintf(stderr, "ERROR: %s\n", msg);
 }
 
-int testNodeCreation() {
+/**
+ * Tests the get function
+ * Returns 0 on success, nonzero on failure
+ */
+int testNodeGet() {
 	int a = 1;
 	int b = 2;
 	int c = 3;
@@ -28,18 +34,74 @@ int testNodeCreation() {
 	append(head, &b); // 1
 	append(head, &a); // 2
 	append(head, &c); // 3
-	int expected = c;
-	Node* end = get(head, 3);
-	int actual = *((int*) end->element);
-	if (actual != expected) {
-		fprintf(stderr, "Node creation not as expected, got %d instead of %d\n", actual, expected);
-		return 3;
-	}
-	if ((actual = length(head)) != (expected = 4)) {
-		fprintf(stderr, "Node length calculated wrong, got %d instead of %d\n", actual, expected);
-		return 3;
-	}
 
+	Node* end = get(head, 3);
+
+	int actual = *((int*)end->element);
+	int expected = c;
+	if (actual != expected) {
+		fprintf(stderr, "node.get(...) not as expected, got %d instead of %d\n", actual, expected);
+		return 1;
+	}
+	return 0;
+}
+
+/**
+ * Tests the length function
+ * Returns 0 on success, nonzero on failure
+ */
+int testNodeLength() {
+	int a = 1;
+	int b = 2;
+	int c = 3;
+	Node* head = newNode(NULL); // header node
+	append(head, &a); // index 0
+	append(head, &b); // 1
+	append(head, &a); // 2
+	append(head, &c); // 3
+
+	int actual = length(head);
+
+	int expected = 4;
+	if (actual != expected) {
+		fprintf(stderr, "node.length(...) not as expected, got %d instead of %d\n", actual, expected);
+		return 1;
+	}
+	return 0;
+}
+
+/**
+ * Tests indexOf function
+ * Returns 0 on success, nonzero on failure
+ */
+int testNodeIndexOf() {
+	char* a = "apple";
+	char* b = "banana";
+	char* c = "cantaloupe";
+	Node* head = newNode(NULL); // header node
+	append(head, a); // index 0
+	append(head, b); // 1
+	append(head, a); // 2
+	append(head, c); // 3
+
+	int actual = indexOf(head, b);
+
+	int expected = 1;
+	if (actual != expected) {
+		fprintf(stderr, "node.indexOf(...) not as expected, got %d instead of %d\n", actual, expected);
+		return 1;
+	}
+	return 0;
+}
+
+/**
+ * Tests functions of the node module
+ * Returns 0 on success, returns nonzero on failure
+ */
+int testNode() {
+	if (testNodeGet()) return 1;
+	if (testNodeLength()) return 2;
+	if (testNodeIndexOf()) return 3;
 	return 0;
 }
 
@@ -58,7 +120,7 @@ int main(int argc, char** argv) {
 	Node* targets;
 
 	if (testTargetInfoCreation()) return 1;
-	if (testNodeCreation()) return 3;
+	if (testNode()) return 3;
 
 	// Parse good file
 	if (argc > 1) {

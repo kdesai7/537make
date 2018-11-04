@@ -11,4 +11,5 @@ Node* newNode(void* element);
 int append(Node* head, void* element);
 Node* get(Node* head, int index);
 int length(Node* header);
+int indexOf(Node* header, char* element);
 #endif
