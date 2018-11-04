@@ -7,6 +7,9 @@ typedef struct Node {
 	void* element;
 	struct Node* next;
 } Node;
+
+void printStringNode(Node* node);
+void printStringNodes(Node* header);
 Node* newNode(void* element);
 int append(Node* head, void* element);
 Node* get(Node* head, int index);

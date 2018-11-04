@@ -9,6 +9,31 @@
 #include "node.h"
 
 /**
+ * Print one node
+ * Assumes node is non-null, element of node is non-null string
+ * Output is NOT terminated by newline
+ */
+void printStringNode(Node* node) {
+	printf("(%s)", (char*)node->element);
+}
+
+/**
+ * Prints all nodes starting past the header
+ * Assumes header is non-null header node
+ * Assumes elements of each node are strings
+ * Connects elements with "-->" arrows
+ * Output terminated by newline
+ */
+void printStringNodes(Node* header) {
+	Node* curr = header;
+	while ((curr = curr->next) != NULL) {
+		printStringNode(curr);
+		if (curr->next != NULL) printf("-->");
+	}
+	printf("\n");
+}
+
+/**
  * Creates a new node with the given element
  */
 Node* newNode(void* element) {
