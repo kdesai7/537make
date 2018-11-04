@@ -60,16 +60,13 @@ int addNewTarget(TargetInfoBuilder* tib, char** tokens) {
 	TargetInfo* newTarget = newTargetInfo(); // will print if fails
 	if (newTarget == NULL) return 1; // so don't print here
 
-	Node* node = newNode((void*)newTarget); // will print if fails
-	if (node == NULL) return 2; // so don't print here
-
 	newTarget->name = tokens[0];
 	for (int i = 1; tokens[i] != NULL; i++) {
 		error = append(newTarget->deps, (void*)tokens[i]);
 		if (error) return 3;
 	}
 
-	error = append(tib->targets, node);
+	error = append(tib->targets, newTarget);
 	if (error) return 3;
 
 	tib->tail = tib->tail->next; // Update tail reference
