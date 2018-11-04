@@ -11,6 +11,7 @@
 #include "text_parsing.h"
 
 const int BUFFSIZE = 256;
+static char* makefileName = "in.txt"; // for testing purposes TODO remove
 
 /**
  * Prints the error message to stderr
@@ -115,8 +116,9 @@ int testTargetInfoCreation() {
 }
 
 int main(int argc, char** argv) {
-	char* filename = "makefile";
-	int fileSpecified = 0; // assume no file specified
+	char* filename = makefileName; // TODO revert to "makefile"
+	char* target = NULL;
+	int fileSpecified = 1; // TODO assume no file specified
 	Node* targets;
 
 	if (testTargetInfoCreation()) return 1;
@@ -127,10 +129,19 @@ int main(int argc, char** argv) {
 		fileSpecified = 1;
 	}
 
+	if (argc == 3) {
+		target = argv[2];
+	}
+
+	if (argc > 3) {
+		printerr("Accepts up to 2 program arguments");
+		return -1;
+	}
+
 	targets = parse(filename);
 
 	if (targets == NULL) {
-		if (fileSpecified) {
+		if (fileSpecified) { // TODO always true for now, fix later
 			fprintf(stderr, "Failed to parse %s\n", filename);
 			return -1;
 		} else { // we were looking for "makefile"
@@ -143,12 +154,27 @@ int main(int argc, char** argv) {
 		}
 	}
 
+	if (targets->next == NULL) {
+		printerr("No targets in given file");
+		return -1;
+	}
+
 	printTargets(targets); // for testing purposes TODO remove
 
-	if (buildSpecGraph(targets) == NULL) {
+	Graph* graph = buildSpecGraph(targets);
+
+	if (graph  == NULL) {
 		fprintf(stderr, "Failed to build spec graph for %s\n", filename);
 		return -1;
 	}
+
+	if (target == NULL) {
+		target = (char*)((TargetInfo*)targets->next->element)->name;
+		printf("No target specified, ");
+	}
+	printf("making \"%s\"\n", target);
+
+	// makeTarget(targets, graph);
 
 	return 0;
 }
