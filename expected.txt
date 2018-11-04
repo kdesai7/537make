@@ -15,6 +15,7 @@ tabs:
 both:
 	cmdline with colon : should not be ignored
 
+["all", "clean", "main.o", "dep1.o", "dep2.o", "test", "spaces", "dep.o", "tabs", "both"]
 0, 1, 1, 1, 1, 0, 0, 0, 0, 0
 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 0, 0, 0, 0, 0, 0, 0, 0, 0, 0

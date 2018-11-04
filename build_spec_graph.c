@@ -4,11 +4,21 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "build_spec_graph.h"
 #include "build_spec_repr.h"
 #include "main.h"
 #include "node.h"
+
+void printNames(Graph* graph) {
+	printf("[");
+	for (int i = 0; i < graph->size; i++) {
+		if (i != 0) printf(", ");
+		printf("\"%s\"", graph->names[i]);
+	}
+	printf("]");
+}
 
 void printGraph(Graph* graph) {
 	for (int r = 0; r < graph->size; r++) {
@@ -44,9 +54,22 @@ Graph* newGraph(int size) {
 		}
 	}
 
+	g->names = (char**)malloc(size * sizeof(char*));
+	if (g->names == NULL) {
+		printerr("Malloc failed");
+		return NULL;
+	}
+
 	g->size = size;
 
 	return g;
+}
+
+int graphIndexOf(Graph* graph, char* name) {
+	for (int i = 0; i < graph->size; i++) {
+		if (!strcmp(graph->names[i], name)) return i;
+	}
+	return -1;
 }
 
 /**
@@ -124,6 +147,8 @@ void* buildSpecGraph(Node* targetsHeader) {
 	Graph* graph; // the actual graph
 	int row; // row within graph matrix
 	int col; // col within graph matrix
+	Node* nameNode;
+	int namesIndex = 0;
 
 	if (names == NULL) return NULL;
 
@@ -156,8 +181,14 @@ void* buildSpecGraph(Node* targetsHeader) {
 		}
 	}
 
-	printGraph(graph);
+	// Populate g->names array with elements of names linked list
+	nameNode = names;
+	while ((nameNode = nameNode->next) != NULL) {
+		name = (char*)nameNode->element;
+		graph->names[namesIndex++] = name;
+	}
 
+	// Detect cycles
 	int cycleIndex = detectCycles(graph);
 	if (cycleIndex != -1) {
 		fprintf(stderr, "ERROR: Cycle detected at vertex %d\n", cycleIndex);

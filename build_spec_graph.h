@@ -7,6 +7,11 @@
 typedef struct Graph {
 	int** matrix; // 2D array of "bools"
 	int size; // number of nodes in graph
+	char** names; // names of each target
 } Graph;
+
+void printNames(Graph* graph);
+void printGraph(Graph* graph);
+
 void* buildSpecGraph(Node* targetsHeader);
 #endif
