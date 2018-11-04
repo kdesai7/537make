@@ -34,6 +34,7 @@ QUIT = "+q!"
 # https://misc.flogisoft.com/bash/tip_colors_and_formatting
 NORMAL = \e[0m
 LIGHT_GREEN = \e[92m
+LIGHT_RED = \e[91m
 
 # the -g flag at all gcc compilation stages ensures that you can use gdb to debug your code
 $(EXE): clean main.o build_spec_graph.o text_parsing.o build_spec_repr.o proc_creation_prog_exe.o node.o
@@ -67,11 +68,15 @@ recompile: clean $(EXE)
 
 # run tests
 test: $(EXE)
+	echo -e "Expecting $(LIGHT_GREEN)SUCCESS$(NORMAL)"
 	$(EXE) $(GOOD_FILE)
+	echo -e "Got $(LIGHT_GREEN)SUCCESS$(NORMAL)"
+	echo -e "Expecting $(LIGHT_RED)FAILURES$(NORMAL)"
 	-for bad_file in $(BAD_FILES) ; do \
 		$(EXE) $$bad_file ; \
 	done
-	echo -e "$(LIGHT_GREEN)SUCCESS$(NORMAL)"
+	echo -e "End expecting $(LIGHT_RED)FAILURES$(NORMAL)"
+	echo -e "$(LIGHT_GREEN)SUCCESS$(NORMAL): tests complete"
 
 # add info to each file
 info:
