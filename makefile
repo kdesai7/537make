@@ -16,6 +16,13 @@ FILES = build_spec_graph.c \
 		proc_creation_prog_exe.h \
 		text_parsing.c \
 		text_parsing.h
+GOOD_FILE = in.txt
+BAD_FILES = cmdWhitespace.txt \
+			meaningful.txt \
+			multWords.txt \
+			spaces.txt \
+			twoColons.txt
+
 HEADER_INFO = student,full name (as in Canvas),Net ID,CS ID,wisc email (not CS email),campus ID number
 MARK_INFO = 1,Mark Wiemer,mwiemer2,mww,mwiemer2@wisc.edu,9074356420
 JENNY_INFO = 2,Jenny Ye,hye35,haengjung,hye35@wisc.edu,9075878315
@@ -60,7 +67,10 @@ recompile: clean $(EXE)
 
 # run tests
 test: $(EXE)
-	$(EXE)
+	$(EXE) $(GOOD_FILE)
+	-for bad_file in $(BAD_FILES) ; do \
+		$(EXE) $$bad_file ; \
+	done
 	echo -e "$(LIGHT_GREEN)SUCCESS$(NORMAL)"
 
 # add info to each file

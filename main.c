@@ -10,9 +10,6 @@
 
 const int BUFFSIZE = 256;
 
-const int NUM_BAD_FILES = 5;
-char* GOOD_FILE_NAME = "in.txt";
-
 /**
  * Prints the error message to stderr
  * e.g. printerr("Oh no!") --> prints "ERROR: Oh no!" terminated by newline
@@ -22,39 +19,7 @@ void printerr(const char* msg) {
 	fprintf(stderr, "ERROR: %s\n", msg);
 }
 
-int main() {
-	int error = 0;
-	char* badFiles[NUM_BAD_FILES];
-	badFiles[0] = "spaces.txt";
-	badFiles[1] = "multWords.txt";
-	badFiles[2] = "twoColons.txt";
-	badFiles[3] = "cmdWhitespace.txt";
-	badFiles[4] = "meaningful.txt";
-
-	TargetInfo* t = newTargetInfo();
-	if (t == NULL) {
-		fprintf(stderr, "newTargetInfo failed\n");
-		return 1;
-	}
-
-	// Parse good file
-	if (parse(GOOD_FILE_NAME) == NULL) {
-		fprintf(stderr, "Failed to parse %s\n", GOOD_FILE_NAME);
-		return -1;
-	}
-
-	// Parse bad files
-	for (int i = 0; i < NUM_BAD_FILES; i++) {
-		printf("Parsing %s\n", badFiles[i]);
-		if (parse(badFiles[i]) != NULL) {
-			fprintf(stderr, "Parsing of %s did not fail when it was supposed to fail\n", badFiles[i]);
-			error = 1;
-		}
-		printf("Done parsing %s\n", badFiles[i]);
-	}
-	if (error) return 2;
-
-	// Test node creation
+int testNodeCreation() {
 	int a = 1;
 	int b = 2;
 	int c = 3;
@@ -69,8 +34,44 @@ int main() {
 	if (actual != expected) {
 		fprintf(stderr, "Node creation not as expected, got %d instead of %d\n", actual, expected);
 		return 3;
-	} else { // if success
-		printf("Node creation successful\n");
+	}
+
+	return 0;
+}
+
+int testTargetInfoCreation() {
+	TargetInfo* t = newTargetInfo();
+	if (t == NULL) {
+		fprintf(stderr, "newTargetInfo failed\n");
+		return 1;
+	}
+	return 0;
+}
+
+int main(int argc, char** argv) {
+	char* filename = "makefile";
+	int fileSpecified = 0; // assume no file specified
+
+	if (testTargetInfoCreation()) return 1;
+	if (testNodeCreation()) return 3;
+
+	// Parse good file
+	if (argc > 1) {
+		filename = argv[1];
+		fileSpecified = 1;
+	}
+
+	if (parse(filename) == NULL) {
+		if (fileSpecified) {
+			fprintf(stderr, "Failed to parse %s\n", filename);
+			return -1;
+		} else { // we were looking for "makefile"
+			filename[0] = 'M'; // look for "Makefile"
+			if (parse(filename) == NULL) {
+				fprintf(stderr, "Failed to parse both 'makefile' and 'Makefile'");
+				return -1;
+			}
+		}
 	}
 
 	return 0;
