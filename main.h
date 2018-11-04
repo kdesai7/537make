@@ -4,4 +4,5 @@
 #ifndef MAIN_H
 #define MAIN_H
 extern const int BUFFSIZE;	// per string in targetinfo
+void printerr(const char* msg);
 #endif

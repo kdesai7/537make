@@ -13,6 +13,15 @@ const int BUFFSIZE = 256;
 const int NUM_BAD_FILES = 5;
 char* GOOD_FILE_NAME = "in.txt";
 
+/**
+ * Prints the error message to stderr
+ * e.g. printerr("Oh no!") --> prints "ERROR: Oh no!" terminated by newline
+ * to stderr
+ */
+void printerr(const char* msg) {
+	fprintf(stderr, "ERROR: %s\n", msg);
+}
+
 int main() {
 	int error = 0;
 	char* badFiles[NUM_BAD_FILES];
