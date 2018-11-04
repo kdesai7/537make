@@ -107,7 +107,10 @@ int cycleAtVertex(Graph* g, int index) {
 	while (stackIndex >= 0) {
 		vertexIndex = stack[stackIndex];
 		stackIndex--;
-		if (visited[vertexIndex]) return 1; // we found a cycle!
+		if (visited[vertexIndex]) {
+			if (vertexIndex == index) return 1; // back where we started
+			continue; // revisiting old node, don't re-add elements
+		}
 		visited[vertexIndex] = 1; // mark current vertex as visited
 		// Add the children of the current vertex
 		for (int i = 0; i < g->size; i++) {
