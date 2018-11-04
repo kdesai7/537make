@@ -168,10 +168,6 @@ int main(int argc, char** argv) {
 		return -1;
 	}
 
-	printNames(graph);
-	printf("\n");
-	printGraph(graph);
-
 	if (target == NULL) {
 		target = (char*)((TargetInfo*)targets->next->element)->name;
 		printf("No target specified, ");

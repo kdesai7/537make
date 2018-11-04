@@ -4,6 +4,15 @@ all: clean main.o dep1.o dep2.o
 	ls /proc/ -al
 	ls .
 
+main.o: main.c main.h dep1.h dep2.h
+	gcc -Wall main.c
+
+dep1.o: dep1.c dep1.h
+	gcc -Wall dep1.c
+
+dep2.o: dep2.c dep2.h
+	gcc -Wall dep2.c
+
 test: all
 	echo -e "SUCCESS"
 
@@ -14,3 +23,5 @@ spaces   : dep.o
 tabs		:
 both	 	 	:
 	cmdline with colon : should not be ignored
+
+none:dep.o
