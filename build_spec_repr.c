@@ -70,5 +70,22 @@ int addNewTarget(TargetInfoBuilder* tib, char** tokens) {
 	if (error) return 3;
 
 	tib->tail = tib->tail->next; // Update tail reference
+
+	return 0;
+}
+
+/**
+ * Adds the given tokens as a command to the last target
+ * Returns 0 on success
+ * Returns 1 if node creation fails
+ * Returns received error code if append fails
+ */
+int addNewCommand(TargetInfoBuilder* tib, char** tokens) {
+	int error = 0;
+
+	TargetInfo* lastTarget = (TargetInfo*)tib->tail->element;
+	error = append(lastTarget->cmds, (void*)tokens);
+	if (error) return error;
+
 	return 0;
 }

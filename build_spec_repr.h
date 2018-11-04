@@ -19,5 +19,6 @@ typedef struct TargetInfoBuilder {
 TargetInfo* newTargetInfo();
 TargetInfoBuilder* newTargetInfoBuilder();
 int addNewTarget(TargetInfoBuilder* tib, char** tokens);
+int addNewCommand(TargetInfoBuilder* tib, char** tokens);
 #endif
 
