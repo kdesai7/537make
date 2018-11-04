@@ -76,17 +76,17 @@ int processLine(TargetInfoBuilder* tib, char** line, int isTargetLine) {
  * Returns 0 on success, CRASHES AND BURNS on failure :)
  */
 char* populateToken(char* line, int startIndex, int endIndex) {
-	char* token = (char*) malloc ((endIndex - startIndex) * sizeof(char));
+	int length = endIndex - startIndex;
+	char* token = (char*) malloc ((length + 1) * sizeof(char));
 	if (token == NULL) {
 		fprintf(stderr, "ERROR: malloc failed\n");
 		return NULL;
 	}
 
-	int length = endIndex - startIndex;
 	for (int i = 0; i < length; i++) {
 		token[i] = line[i + startIndex];
 	}
-	token[length + 1] = '\0';
+	token[length] = '\0';
 	return token;
 }
 
