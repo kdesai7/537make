@@ -59,11 +59,10 @@ void printLine(char** line, int isTargetLine) {
 int processLine(TargetInfoBuilder* tib, char** line, int isTargetLine) {
 	printLine(line, isTargetLine);
 	if (isTargetLine) {
-		addNewTarget(tib, line);
+		return addNewTarget(tib, line);
 	} else { // it's a command line
-		// TODO add new command
+		return addNewCommand(tib, line);
 	}
-	return 0;
 }
 
 /**
