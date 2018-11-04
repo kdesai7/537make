@@ -200,3 +200,24 @@ void* buildSpecGraph(Node* targetsHeader) {
 
 	return (void*)graph;
 }
+
+/**
+ * Makes the given target if it is out of date
+ * Does post-order traversal, making all dependencies first, if necessary
+ * Assumes targets is a the header node, elements are TargetInfo*
+ * Assumes all arguments are non-null, graph is acyclic
+ * Returns 0 on success, nonzero on failure
+ */
+int makeTarget(Node* targets, Graph* graph, char* target) {
+	int shouldMakeThis = 0; // truthy if out of date
+	int targetIndex = graphIndexOf(graph, target);
+
+	// Call makeTarget on all children
+	for (int i = 0; i < graph->size; i++) {
+		if (graph->matrix[targetIndex][i]) { // if we depend on the i-th target
+			makeTarget(targets, graph, graph->names[i]);
+		}
+	}
+
+	return 0;
+}

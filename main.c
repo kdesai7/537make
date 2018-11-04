@@ -174,7 +174,10 @@ int main(int argc, char** argv) {
 	}
 	printf("making \"%s\"\n", target);
 
-	// makeTarget(targets, graph);
+	if (makeTarget(targets, graph, target)) {
+		printerr("Make target failed");
+		return 1;
+	}
 
 	return 0;
 }

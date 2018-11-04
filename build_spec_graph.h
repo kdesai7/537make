@@ -14,4 +14,5 @@ void printNames(Graph* graph);
 void printGraph(Graph* graph);
 
 void* buildSpecGraph(Node* targetsHeader);
+int makeTarget(Node* targets, Graph* graph, char* target);
 #endif
