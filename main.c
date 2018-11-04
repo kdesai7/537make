@@ -58,14 +58,16 @@ int main() {
 	int a = 1;
 	int b = 2;
 	int c = 3;
-	Node* head = newNode((void*) &a);
-	append(head, &b);
-	append(head, &a);
-	append(head, &c);
+	Node* head = newNode(NULL); // header node
+	append(head, &a); // index 0
+	append(head, &b); // 1
+	append(head, &a); // 2
+	append(head, &c); // 3
+	int expected = c;
 	Node* end = get(head, 3);
 	int actual = *((int*) end->element);
-	if (actual != c) { // if failure
-		fprintf(stderr, "Node creation not as expected\n");
+	if (actual != expected) {
+		fprintf(stderr, "Node creation not as expected, got %d instead of %d\n", actual, expected);
 		return 3;
 	} else { // if success
 		printf("Node creation successful\n");

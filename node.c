@@ -39,13 +39,15 @@ int append(Node* head, void* element) {
 
 /**
  * Returns the element at the given 0-based index relative from the head
+ * The given node is not included, it is considered a header node
  * Returns NULL on failure
  */
-Node* get(Node* head, int index) {
-	Node* curr = head;
-	for (int i = 0; i < index; i++) {
-		if (curr == NULL) return NULL;
+Node* get(Node* header, int index) {
+	Node* curr = header;
+	if (curr == NULL) return NULL;
+	for (int i = -1; i < index; i++) { // -1 because we start at header node
 		curr = curr->next;
+		if (curr == NULL) return NULL;
 	}
 	return curr;
 }
