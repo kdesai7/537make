@@ -1,3 +1,4 @@
 537make
 *.o
 /.vscode/settings.json
+out.txt
