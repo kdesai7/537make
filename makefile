@@ -23,7 +23,8 @@ BAD_FILES = cmdWhitespace.txt \
 			meaningful.txt \
 			multWords.txt \
 			spaces.txt \
-			twoColons.txt
+			twoColons.txt \
+			cycles.txt
 
 HEADER_INFO = student,full name (as in Canvas),Net ID,CS ID,wisc email (not CS email),campus ID number
 MARK_INFO = 1,Mark Wiemer,mwiemer2,mww,mwiemer2@wisc.edu,9074356420
@@ -76,7 +77,7 @@ test: $(EXE)
 	echo -e "Got $(LIGHT_GREEN)SUCCESS$(NORMAL)"
 	echo -e "Expecting $(LIGHT_RED)FAILURES$(NORMAL)"
 	-for bad_file in $(BAD_FILES) ; do \
-		./$(EXE) $$bad_file ; \
+		./$(EXE) $$bad_file > $(OUT_FILE) ; \
 	done
 	echo -e "End expecting $(LIGHT_RED)FAILURES$(NORMAL)"
 	echo -e "$(LIGHT_GREEN)SUCCESS$(NORMAL): tests complete"

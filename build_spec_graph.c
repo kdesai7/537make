@@ -62,6 +62,54 @@ int addIfNotIn(Node* list, char* element) {
 }
 
 /**
+ * Helper for detectCycles(Graph*)
+ * Traverses graph and finds cycles
+ * Returns truthy iff vertex at index i is part of a cycle
+ */
+int cycleAtVertex(Graph* g, int index) {
+	int visited[g->size];
+	int stack[g->size]; // array used as stack
+	int stackIndex = -1; // to use array as stack
+	int vertexIndex = index;
+
+	// Clear the visited array
+	for (int i = 0; i < g->size; i++) {
+		visited[i] = 0;
+	}
+
+	stackIndex++;
+	stack[stackIndex] = vertexIndex;
+
+	// While stack is not empty, traverse
+	while (stackIndex >= 0) {
+		vertexIndex = stack[stackIndex];
+		stackIndex--;
+		if (visited[vertexIndex]) return 1; // we found a cycle!
+		visited[vertexIndex] = 1; // mark current vertex as visited
+		// Add the children of the current vertex
+		for (int i = 0; i < g->size; i++) {
+			if (g->matrix[vertexIndex][i]) {
+				stackIndex++;
+				stack[stackIndex] = i;
+			}
+		}
+	}
+
+	return 0;
+}
+
+/**
+ * Returns lowest index of some vertex in a cycle if the graph has cycles
+ * Returns -1 if graph has no cycles
+ */
+int detectCycles(Graph* g) {
+	for (int i = 0; i < g->size; i++) {
+		if (cycleAtVertex(g, i)) return i;
+	}
+	return -1;
+}
+
+/**
  * Builds a graph based on the given linked list of targets
  * Assumes the given node is a non-null header and each element is a TargetInfo*
  * Returns NULL on failure
@@ -110,5 +158,11 @@ void* buildSpecGraph(Node* targetsHeader) {
 
 	printGraph(graph);
 
-	return NULL;
+	int cycleIndex = detectCycles(graph);
+	if (cycleIndex != -1) {
+		fprintf(stderr, "ERROR: Cycle detected at vertex %d\n", cycleIndex);
+		return NULL;
+	}
+
+	return (void*)graph;
 }

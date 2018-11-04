@@ -145,7 +145,10 @@ int main(int argc, char** argv) {
 
 	printTargets(targets); // for testing purposes TODO remove
 
-	buildSpecGraph(targets);
+	if (buildSpecGraph(targets) == NULL) {
+		fprintf(stderr, "Failed to build spec graph for %s\n", filename);
+		return -1;
+	}
 
 	return 0;
 }
