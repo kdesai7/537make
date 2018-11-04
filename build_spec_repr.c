@@ -41,6 +41,7 @@ TargetInfoBuilder* newTargetInfoBuilder() {
 	TargetInfoBuilder* t =
 		(TargetInfoBuilder*) malloc(sizeof(TargetInfoBuilder));
 	t->targets = (Node*) malloc(sizeof(Node));
+	t->tail = t->targets;
 	return t;
 }
 
@@ -71,5 +72,6 @@ int addNewTarget(TargetInfoBuilder* tib, char** tokens) {
 	error = append(tib->targets, node);
 	if (error) return 3;
 
+	tib->tail = tib->tail->next; // Update tail reference
 	return 0;
 }

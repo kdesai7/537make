@@ -13,6 +13,7 @@ typedef struct TargetInfo {
 
 typedef struct TargetInfoBuilder {
 	Node* targets; // each element is a TargetInfo*
+	Node* tail; // last element int targets
 } TargetInfoBuilder;
 
 TargetInfo* newTargetInfo();
