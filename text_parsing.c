@@ -294,6 +294,7 @@ Node* parse(char* filename) {
 				return NULL;
 			}
 			char** tokenizedLine = tokenize(buffer, result);
+			free(buffer); // don't use raw buffer anymore, only tokens
 			processLine(tib, tokenizedLine, result);
 		} else { // ignore this line, free it
 			free(buffer);
