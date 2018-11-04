@@ -57,7 +57,6 @@ void printLine(char** line, int isTargetLine) {
  * Returns 0 on success, nonzero on error.
  */
 int processLine(TargetInfoBuilder* tib, char** line, int isTargetLine) {
-	printLine(line, isTargetLine);
 	if (isTargetLine) {
 		return addNewTarget(tib, line);
 	} else { // it's a command line

@@ -51,6 +51,7 @@ int testTargetInfoCreation() {
 int main(int argc, char** argv) {
 	char* filename = "makefile";
 	int fileSpecified = 0; // assume no file specified
+	Node* targets;
 
 	if (testTargetInfoCreation()) return 1;
 	if (testNodeCreation()) return 3;
@@ -61,18 +62,23 @@ int main(int argc, char** argv) {
 		fileSpecified = 1;
 	}
 
-	if (parse(filename) == NULL) {
+	targets = parse(filename);
+
+	if (targets == NULL) {
 		if (fileSpecified) {
 			fprintf(stderr, "Failed to parse %s\n", filename);
 			return -1;
 		} else { // we were looking for "makefile"
 			filename[0] = 'M'; // look for "Makefile"
-			if (parse(filename) == NULL) {
+			targets = parse(filename);
+			if (targets == NULL) {
 				fprintf(stderr, "Failed to parse both 'makefile' and 'Makefile'");
 				return -1;
 			}
 		}
 	}
+
+	printTargets(targets);
 
 	return 0;
 }

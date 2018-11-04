@@ -10,6 +10,54 @@
 #include "node.h"
 #include "text_parsing.h"
 
+/**
+ * Pretty-prints the contents of one node for debugging
+ * Assumes targetNode is non-null, element of type TargetInfo*
+ * Output is terminated by newline
+ */
+void printTarget(Node* targetNode) {
+	TargetInfo* target = (TargetInfo*)(targetNode->element);
+	Node* depNode = target->deps;
+	Node* cmdNode = target->cmds;
+	char* dep; // one printable dependency
+	char** cmd;
+
+	// Print name and dependencies
+	printf("%s:", target->name);
+	while (depNode->next != NULL) {
+		depNode = depNode->next;
+		dep = (char*)depNode->element;
+		printf(" %s", dep);
+	}
+	printf("\n");
+
+	// Print commands
+	while (cmdNode->next != NULL) {
+		cmdNode = cmdNode->next;
+		cmd = (char**)cmdNode->element;
+		printf("\t");
+		for (int i = 0; cmd[i] != NULL; i++) {
+			if (i != 0) printf(" ");
+			printf("%s", cmd[i]);
+		}
+		printf("\n");
+	}
+}
+
+/**
+ * Print the parsed targets for debugging purposes
+ * Assumes the node's elements are of type TargetInfo*
+ * Assumes given node is non-null header node
+ */
+void printTargets(Node* targetHeader) {
+	Node* curr = targetHeader;
+	while (curr->next != NULL) {
+		curr = curr->next;
+		printTarget(curr);
+		printf("\n"); // extra blank line for readability
+	}
+}
+
 TargetInfo* newTargetInfo() {
 	TargetInfo* t;
 
