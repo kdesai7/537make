@@ -1,0 +1,7 @@
+# A makefile with cyclic dependencies
+good1: good2
+good2: good3
+a: b
+b: c
+c: d
+d: a
