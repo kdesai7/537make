@@ -79,7 +79,7 @@ char* populateToken(char* line, int startIndex, int endIndex) {
 	int length = endIndex - startIndex;
 	char* token = (char*) malloc ((length + 1) * sizeof(char));
 	if (token == NULL) {
-		fprintf(stderr, "ERROR: malloc failed\n");
+		printerr(MSG_MALLOC);
 		return NULL;
 	}
 
@@ -129,7 +129,7 @@ char** tokenize(char* line, int isTargetLine) {
 	// Set up array for tokenized line
 	tokenizedLine = (char**) malloc((numElements + 1) * sizeof(char*));
 	if (tokenizedLine == NULL) {
-		fprintf(stderr, "ERROR: malloc failed\n");
+		printerr(MSG_MALLOC);
 		return NULL;
 	}
 
@@ -184,36 +184,36 @@ int determineLineType(char* buffer, int length, int firstMeaningfulLine) {
 	int foundWhitespace = 0; // whether we have encountered whitespace yet
 	char c = buffer[0];
 	if (c == ' ') {
-		fprintf(stderr, "%s\n", MSG_LINE_STARTS_WITH_SPACE);
+		printerr(MSG_LINE_STARTS_WITH_SPACE);
 		return -1; // invalid Line
 	}
 
 	expectingTargetLine = (c == '\t') ? 0 : 1;
 
 	if (firstMeaningfulLine && !expectingTargetLine) {
-		fprintf(stderr, "%s\n", "First meaningful line isn't a target");
+		printerr("First meaningful line isn't a target");
 		return -1;
 	}
 
 	if (!expectingTargetLine && (buffer[1] == '\t' || buffer[1] == ' ')) {
-		fprintf(stderr, "%s\n", "Command line has too much whitespace");
+		printerr("Command line has too much whitespace");
 		return -1;
 	}
 
 	for (int i = 0; i < length; i++) {
 		c = buffer[i];
 		if (c == '\0') {
-			fprintf(stderr, "%s\n", MSG_NULL_TERMINATOR);
+			printerr(MSG_NULL_TERMINATOR);
 			return -1;
 		}
 		if (expectingTargetLine) {
 			if (foundColon && c == ':') { // if we find a second colon
-				fprintf(stderr, "%s\n", "Target line has multiple colons");
+				printerr("Target line has multiple colons");
 				return -1;
 			}
 			// two words before colon makes something invalid
 			if (foundWhitespace && !foundColon && !isWhitespaceOrColon(c)) {
-				fprintf(stderr, "%s\n", "Multiple words before colon");
+				printerr("Multiple words before colon");
 				return -1;
 			}
 
@@ -223,7 +223,7 @@ int determineLineType(char* buffer, int length, int firstMeaningfulLine) {
     }
 
 	if (buffer[length] != '\0') {
-		fprintf(stderr, "%s\n", MSG_NO_TERMINATOR);
+		printerr(MSG_NO_TERMINATOR);
 		return -1;
 	}
 
@@ -247,7 +247,7 @@ Node* parse(char* filename) {
 	// Open file
 	file = fopen(filename, "r");
 	if (file == NULL) {
-		fprintf(stderr, "%s\n", MSG_FILE_NOT_FOUND);
+		printerr(MSG_FILE_NOT_FOUND);
 		return NULL;
 	}
 
@@ -256,7 +256,7 @@ Node* parse(char* filename) {
 		// allocate the buffer
 		buffer = (char*) malloc(BUFFSIZE * sizeof(char));
 		if (buffer == NULL) {
-			fprintf(stderr, "%s\n", MSG_MALLOC);
+			printerr(MSG_MALLOC);
 			return NULL;
 		}
 
@@ -269,7 +269,7 @@ Node* parse(char* filename) {
 			if (c == EOF || c == '\n') { // end of line
 				if (c == EOF && i == 0) { // end of file
 					if (fclose(file)) {
-						fprintf(stderr, "%s\n", MSG_FILE_NOT_CLOSED);
+						printerr(MSG_FILE_NOT_CLOSED);
 						return NULL;
 					}
 					return tib->targets; // return the targets
@@ -284,7 +284,7 @@ Node* parse(char* filename) {
 		} // end buffer population
 
 		if (!validBuffer) {
-			fprintf(stderr, "%s\n", MSG_LINE_TOO_LONG);
+			printerr(MSG_LINE_TOO_LONG);
 			return NULL;
 		}
 
