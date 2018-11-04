@@ -1,6 +1,12 @@
-all: main.o dep1.o dep2.o
+all: clean main.o dep1.o dep2.o
 	ls /proc/ -al
 	ls .
+
+test: all
+	echo -e "SUCCESS"
+
+clean:
+	echo -e "I'm not actually going to remove anything!"
 
 spaces: dep.o
 
