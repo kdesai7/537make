@@ -5,9 +5,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-
 #include "build_spec_repr.h"
 #include "main.h"
+#include "node.h"
 #include "text_parsing.h"
 
 TargetInfo* newTargetInfo() {
@@ -44,6 +44,32 @@ TargetInfoBuilder* newTargetInfoBuilder() {
 	return t;
 }
 
-int addNewTarget(TargetInfoBuilder* tib) {
+/**
+ * Tries to add a new target to the given tib
+ * tokens are the tokens of the target line, assumed non-null, length >= 1
+ * Assumes tokens ends with NULL pointer
+ * Returns 0 on success, nonzero on failure
+ * Returns 1 if newTargetInfo fails
+ * Returns 2 if newNode fails
+ * Returns 3 if append fails
+ */
+int addNewTarget(TargetInfoBuilder* tib, char** tokens) {
+	int error = 0;
+
+	TargetInfo* newTarget = newTargetInfo(); // will print if fails
+	if (newTarget == NULL) return 1; // so don't print here
+
+	Node* node = newNode((void*)newTarget); // will print if fails
+	if (node == NULL) return 2; // so don't print here
+
+	newTarget->name = tokens[0];
+	for (int i = 1; tokens[i] != NULL; i++) {
+		error = append(newTarget->deps, (void*)tokens[i]);
+		if (error) return 3;
+	}
+
+	error = append(tib->targets, node);
+	if (error) return 3;
+
 	return 0;
 }

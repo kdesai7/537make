@@ -57,14 +57,12 @@ void printLine(char** line, int isTargetLine) {
  * Returns 0 on success, nonzero on error.
  */
 int processLine(TargetInfoBuilder* tib, char** line, int isTargetLine) {
+	printLine(line, isTargetLine);
 	if (isTargetLine) {
-		// addNewTarget(tib, line); // TODO once nodes are updated
+		addNewTarget(tib, line);
 	} else { // it's a command line
 		// TODO add new command
 	}
-
-	printLine(line, isTargetLine);
-
 	return 0;
 }
 
