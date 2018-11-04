@@ -51,3 +51,16 @@ Node* get(Node* header, int index) {
 	}
 	return curr;
 }
+
+/**
+ * Returns the length of the given linked list
+ * Assumes the given node is a header node
+ * If given node is NULL, returns -1
+ */
+int length(Node* header) {
+	if (header == NULL) return -1;
+	int length = 0;
+	Node* curr = header;
+	while ((curr = curr->next) != NULL) length++;
+	return length;
+}

@@ -35,6 +35,10 @@ int testNodeCreation() {
 		fprintf(stderr, "Node creation not as expected, got %d instead of %d\n", actual, expected);
 		return 3;
 	}
+	if ((actual = length(head)) != (expected = 4)) {
+		fprintf(stderr, "Node length calculated wrong, got %d instead of %d\n", actual, expected);
+		return 3;
+	}
 
 	return 0;
 }
