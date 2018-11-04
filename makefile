@@ -17,6 +17,8 @@ FILES = build_spec_graph.c \
 		text_parsing.c \
 		text_parsing.h
 GOOD_FILE = in.txt
+EXPECTED_FILE = expected.txt
+OUT_FILE = out.txt
 BAD_FILES = cmdWhitespace.txt \
 			meaningful.txt \
 			multWords.txt \
@@ -69,7 +71,8 @@ recompile: clean $(EXE)
 # run tests
 test: $(EXE)
 	echo -e "Expecting $(LIGHT_GREEN)SUCCESS$(NORMAL)"
-	./$(EXE) $(GOOD_FILE)
+	./$(EXE) $(GOOD_FILE) > $(OUT_FILE)
+	diff $(OUT_FILE) $(EXPECTED_FILE)
 	echo -e "Got $(LIGHT_GREEN)SUCCESS$(NORMAL)"
 	echo -e "Expecting $(LIGHT_RED)FAILURES$(NORMAL)"
 	-for bad_file in $(BAD_FILES) ; do \

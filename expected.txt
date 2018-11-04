@@ -1,0 +1,11 @@
+all: main.o dep1.o dep2.o
+	ls /proc/ -al
+	ls .
+
+spaces: dep.o
+
+tabs:
+
+both:
+	cmdline with colon : should not be ignored
+
