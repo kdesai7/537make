@@ -250,6 +250,12 @@ int makeTarget(Node* targets, Graph* graph, char* target) {
 	time_t thisMtime; // modified time of target
 	time_t depMtime; // modified time of dependency
 
+	// Check if we have a valid target
+	if (targetIndex < 0) {
+		fprintf(stderr, "ERROR: No rule to make target %s, stop.\n", target);
+		return -1;
+	}
+
 	// Call makeTarget on all children
 	for (int i = 0; i < graph->size; i++) {
 		if (graph->matrix[targetIndex][i]) { // if we depend on the i-th target
