@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "proc_creation_prog_exe.h"
 #include "build_spec_repr.h"
 #include "build_spec_graph.h"
 #include "node.h"

@@ -14,7 +14,7 @@ void printCmds(Node* targetNode) {
 	TargetInfo* target = (TargetInfo*)targetNode->element;
 	Node* cmdNode = target->cmds;
 	char** cmd;
-	
+
 	// Print commands
 	while (cmdNode->next != NULL) {
 		cmdNode = cmdNode->next;
