@@ -10,27 +10,11 @@
 #include "node.h"
 #include "text_parsing.h"
 
-/**
- * Pretty-prints the contents of one node for debugging
- * Assumes targetNode is non-null, element of type TargetInfo*
- * Output is terminated by newline
- */
-void printTarget(Node* targetNode) {
-	TargetInfo* target = (TargetInfo*)(targetNode->element);
-	Node* depNode = target->deps;
+void printCmds(Node* targetNode) {
+	TargetInfo* target = (TargetInfo*)targetNode->element;
 	Node* cmdNode = target->cmds;
-	char* dep; // one printable dependency
 	char** cmd;
-
-	// Print name and dependencies
-	printf("%s:", target->name);
-	while (depNode->next != NULL) {
-		depNode = depNode->next;
-		dep = (char*)depNode->element;
-		printf(" %s", dep);
-	}
-	printf("\n");
-
+	
 	// Print commands
 	while (cmdNode->next != NULL) {
 		cmdNode = cmdNode->next;
@@ -42,6 +26,28 @@ void printTarget(Node* targetNode) {
 		}
 		printf("\n");
 	}
+}
+
+/**
+ * Pretty-prints the contents of one node for debugging
+ * Assumes targetNode is non-null, element of type TargetInfo*
+ * Output is terminated by newline
+ */
+void printTarget(Node* targetNode) {
+	TargetInfo* target = (TargetInfo*)(targetNode->element);
+	Node* depNode = target->deps;
+	char* dep; // one printable dependency
+
+	// Print name and dependencies
+	printf("%s:", target->name);
+	while (depNode->next != NULL) {
+		depNode = depNode->next;
+		dep = (char*)depNode->element;
+		printf(" %s", dep);
+	}
+	printf("\n");
+
+	printCmds(targetNode);
 }
 
 /**

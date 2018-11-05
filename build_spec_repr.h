@@ -16,6 +16,7 @@ typedef struct TargetInfoBuilder {
 	Node* tail; // last element int targets
 } TargetInfoBuilder;
 
+void printCmds(Node* targetNode);
 void printTargets(Node* targetHeader);
 TargetInfo* newTargetInfo();
 TargetInfoBuilder* newTargetInfoBuilder();
