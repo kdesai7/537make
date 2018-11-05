@@ -11,7 +11,7 @@
 #include "text_parsing.h"
 
 const int BUFFSIZE = 256;
-static char* makefileName = "in.txt"; // for testing purposes TODO remove
+static char* makefileName = "test/makefile"; // for testing purposes TODO remove
 
 /**
  * Prints the error message to stderr
@@ -174,7 +174,7 @@ int main(int argc, char** argv) {
 	}
 	printf("making \"%s\"\n", target);
 
-	if (makeTarget(targets, graph, target)) {
+	if (makeTarget(targets, graph, target) < 0) {
 		printerr("Make target failed");
 		return 1;
 	}

@@ -2,9 +2,13 @@
 // 1,Mark Wiemer,mwiemer2,mww,mwiemer2@wisc.edu,9074356420
 // 2,Jenny Ye,hye35,haengjung,hye35@wisc.edu,9075878315
 
+#include <errno.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
 #include "build_spec_graph.h"
 #include "build_spec_repr.h"
@@ -202,22 +206,71 @@ void* buildSpecGraph(Node* targetsHeader) {
 }
 
 /**
+ * Return a pointer to the node whose element name is the given name
+ * Assumes header is a non-null header node, elements are of type TargetInfo*
+ * Returns NULL if no node exists with the given name
+ */
+Node* find(Node* header, char* name) {
+	Node* curr = header;
+	TargetInfo* t;
+	while ((curr = curr->next) != NULL) {
+		t = (TargetInfo*)curr->element;
+		if (!strcmp(t->name, name)) return curr;
+	}
+	return NULL;
+}
+
+/**
  * Makes the given target if it is out of date
  * Does post-order traversal, making all dependencies first, if necessary
  * Assumes targets is a the header node, elements are TargetInfo*
  * Assumes all arguments are non-null, graph is acyclic
- * Returns 0 on success, nonzero on failure
+ * Returns 1 if target was out of date, 0 if target was up to date, negative on failure
  */
 int makeTarget(Node* targets, Graph* graph, char* target) {
 	int shouldMakeThis = 0; // truthy if out of date
 	int targetIndex = graphIndexOf(graph, target);
+	struct stat fileStat; // info on file corresponding to this target
+	Node* targetNode;
 
 	// Call makeTarget on all children
 	for (int i = 0; i < graph->size; i++) {
 		if (graph->matrix[targetIndex][i]) { // if we depend on the i-th target
-			makeTarget(targets, graph, graph->names[i]);
+			shouldMakeThis |= makeTarget(targets, graph, graph->names[i]);
+			if (shouldMakeThis < 0) { // assumes 2's-complement implementation
+				return shouldMakeThis; // don't continue processing if make failed
+			}
 		}
 	}
 
-	return 0;
+	// Check file if no children were out of date
+	if (!shouldMakeThis) { // no children were out of date
+		char path[999] = "test/"; // TODO fix this
+		strcat(path, target);
+		int error = stat(path, &fileStat);
+		if (error) {
+			if (errno == ENOENT) {
+				printf("File not found\n");
+				shouldMakeThis = 1;
+			} else {
+				printf("Other error %s\n", strerror(errno));
+				return -1;
+			}
+		} else { // file successfully found
+			printf("Skipping %s as it is not out of date\n", target);
+		}
+	}
+
+	// Time to execute commands!
+	if (shouldMakeThis) {
+		targetNode = find(targets, target);
+		if (targetNode == NULL) {
+			fprintf(stderr, "No rule to make target \"%s\"\n", target);
+			return -1;
+		}
+		printf("Commands for %s\n", target);
+		printCmds(targetNode);
+	}
+
+	return 1;
 }

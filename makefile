@@ -16,7 +16,7 @@ FILES = build_spec_graph.c \
 		proc_creation_prog_exe.h \
 		text_parsing.c \
 		text_parsing.h
-GOOD_FILE = in.txt
+GOOD_FILE = test/makefile # TODO change this
 EXPECTED_FILE = expected.txt
 OUT_FILE = out.txt
 BAD_FILES = cmdWhitespace.txt \

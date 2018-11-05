@@ -1,29 +1,55 @@
-all: clean main.o dep1.o dep2.o
-	ls /proc/ -al
-	ls .
+all: main.o munch.o queue.o reader.o writer.o
+	gcc -o prodcomm main.o munch.o queue.o reader.o writer.o -lpthread
 
-main.o: main.c main.h dep1.h dep2.h
-	gcc -Wall main.c
+main.o: main.c main.h munch.h queue.h writer.h
+	gcc -Wall -Wextra main.c
 
-dep1.o: dep1.c dep1.h
-	gcc -Wall dep1.c
+munch.o: munch.c main.h munch.h queue.h
+	gcc -Wall -Wextra -c munch.c
 
-dep2.o: dep2.c dep2.h
-	gcc -Wall dep2.c
+queue.o: queue.c main.h queue.h
+	gcc -Wall -Wextra -c queue.c
 
-test: all
-	echo -e "SUCCESS"
+reader.o: reader.c main.h
+	gcc -Wall -Wextra -c reader.c
+
+writer.o: writer.c main.h queue.h
+	gcc -Wall -Wextra -c writer.c
 
 clean:
-	echo -e "I'm not actually going to remove anything!"
+	rm -f procdomm out.txt *.o
+	rm -rf ./scan-build
 
-spaces: dep.o
-
-tabs:
-
-both:
-	cmdline with colon : should not be ignored
-
-none: dep.o
+scan-build: clean
+	scan-build -o ./scan-build make
 
 No target specified, making "all"
+Skipping main.c as it is not out of date
+Skipping main.h as it is not out of date
+Skipping munch.h as it is not out of date
+Skipping queue.h as it is not out of date
+Skipping writer.h as it is not out of date
+Commands for main.o
+	gcc -Wall -Wextra main.c
+Skipping main.h as it is not out of date
+Skipping munch.h as it is not out of date
+Skipping queue.h as it is not out of date
+Skipping munch.c as it is not out of date
+Commands for munch.o
+	gcc -Wall -Wextra -c munch.c
+Skipping main.h as it is not out of date
+Skipping queue.h as it is not out of date
+Skipping queue.c as it is not out of date
+Commands for queue.o
+	gcc -Wall -Wextra -c queue.c
+Skipping main.h as it is not out of date
+Skipping reader.c as it is not out of date
+Commands for reader.o
+	gcc -Wall -Wextra -c reader.c
+Skipping main.h as it is not out of date
+Skipping queue.h as it is not out of date
+Skipping writer.c as it is not out of date
+Commands for writer.o
+	gcc -Wall -Wextra -c writer.c
+Commands for all
+	gcc -o prodcomm main.o munch.o queue.o reader.o writer.o -lpthread
