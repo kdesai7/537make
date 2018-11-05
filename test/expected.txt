@@ -1,0 +1,35 @@
+ERROR: line too long, it was discarded
+HI
+HELLO*WORLD
+MY*NAME*IS*JENNY
+HOW*ARE*YOU*TODAY?
+I*AM*DOING*WELL.
+IT'S*NICE*TO*HEAR*THAT*EVERYTHING*IS*GREAT.
+I*WOULD*LIKE*TO*BUY*POTATOES.
+IS*THERE*ANYTHING*I*CAN*HELP*YOU*WITH?
+LET'S*ADD*SOME*MORE*LINES,*JUST*FOR*DISTRACTIONS.
+HERE'S*ONE.
+AND*ANOTHER!
+WOW*LOOK*AT*ALL*OF*THESE*LINES.
+I'M*DEFINITELY*NOT*BORED.
+NO*SIR.
+OH*HEY*ALSO*MY*NAME*IS*MARK.
+SEE*THERE*ARE*TWO*OF*US*WRITING*THIS*FILE.
+ISN'T*THAT*INTERESTING?
+
+Strings processed: 18
+Reader to Munch1:
+	enqueueCount: 18
+	dequeueCount: 18
+	enqueueBlockCount: 0
+	dequeueBlockCount: 0
+Munch1 to Munch2:
+	enqueueCount: 18
+	dequeueCount: 18
+	enqueueBlockCount: 0
+	dequeueBlockCount: 0
+Munch2 to Writer:
+	enqueueCount: 18
+	dequeueCount: 18
+	enqueueBlockCount: 0
+	dequeueBlockCount: 0

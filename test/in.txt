@@ -1,0 +1,18 @@
+Hi
+Hello World
+My name is Jenny
+How are you today?
+I am doing well.
+It's nice to hear that everything is great.
+I would like to buy potatoes.
+Is there anything I can help you with?
+Let's add some more lines, just for distractions.
+Here's one.
+And another!
+Wow look at all of these lines.
+I'm definitely not bored.
+Look at this super long line holy cow it has so many characters we are past 70 characters now wow we are going to go to 257 characters because I don't want to change my buffer size just for this test and also it never hurts to have a good long line in your test file somewhere hey we did it almost at 300 characters now wow we just keep going! Oh god we have to get to 1025 characters now that is going to take a while but hey we can do it yes we can. Have I ever told you about camp? Oh man it's magical such a fun place you should totally be a camp counselor as long you like kids. This place is so beautiful, the people and the nature and the activities and the experiences, it's all great. My favorite type of sandwich is roast beef on a ciabatta bun with pepper jack, shredded lettuce, mayonnaise, and a little bit of dijon mustard. Delicious! Add some potato chips and a pickle and oh boy do you have a great dinner to be eaten before two and a half hours of tutoring. And for only three dollars and eighty-four cents it's a steal!
+No sir.
+Oh hey also my name is Mark.
+See there are two of us writing this file.
+Isn't that interesting?
