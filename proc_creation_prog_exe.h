@@ -4,6 +4,7 @@
 
 #ifndef PROC_CREATION_PROG_EXE
 #define PROC_CREATION_PROG_EXE
-#include "proc_creation_prog_exe.h"
+#include "node.h"
 int executeCommand(char** command);
+int executeCommands(Node* cmdHeader);
 #endif

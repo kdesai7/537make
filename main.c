@@ -12,7 +12,7 @@
 #include "text_parsing.h"
 
 const int BUFFSIZE = 256;
-static char* makefileName = "test/makefile"; // for testing purposes TODO remove
+static char* makefileName = "makefile"; // for testing purposes TODO remove
 
 /**
  * Prints the error message to stderr

@@ -24,3 +24,9 @@ clean:
 
 scan-build: clean
 	scan-build -o ./scan-build make
+
+bad-target: nonexistentfile.c
+
+bad-commands:
+	ls /potatoes
+	echo "SUCCESS"

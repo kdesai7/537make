@@ -7,6 +7,9 @@
 #include <stdlib.h>
 #include <sys/wait.h>
 
+#include "main.h"
+#include "node.h"
+
 /**
  * Run each build command in a new process,
  * Waiting for its completion,
@@ -14,40 +17,54 @@
  *
  * Return 0 on success ; nonzero on failure
  */
-
 int executeCommand(char** command) {
 	pid_t child_pid, pid;
 	int status;
 
 	child_pid = fork();
 
-	if (child_pid == 0) {
-		// if child process
-		printf ("Child : executing, %s\n", command[0]);
-
+	if (child_pid == 0) { // child process
 		execvp(command[0], command);
-
-		//if exec fails
-		perror("execve failed");
-	}else if (child_pid > 0) {
-		// if parent process
+		// if exec fails
+		perror("execvp");
+	} else if (child_pid > 0) { // parent process
 		// if library call fails
 		if ( (pid = wait(&status)) < 0) {
-		       perror("wait");
-	       	       exit(EXIT_FAILURE);
+				perror("wait");
+				exit(EXIT_FAILURE);
 		}
-		if (WIFEXITED(status)) {
-			if (WEXITSTATUS(status)) {
-				printf("command failed\n");
-			} else {
-				printf("command succeeded\n");
+		if (WIFEXITED(status)) { // child is done
+			if (WEXITSTATUS(status)) { // command failed
+				printerr("Command failed");
+				exit(EXIT_FAILURE);
+			} else { // command succeeded
+				return 0;
 			}
 		}
- 		printf("Parent finished executing\n");
-	} else {
-		perror ("fork failed");
-	       	exit(EXIT_FAILURE);
+	} else { // fork failed
+		perror("fork failed");
+		exit(EXIT_FAILURE);
 		return -1;
 	}
+	return 0;
+}
+
+/**
+ * Executes all commands in the linked list
+ * Assumes cmdHeader is a non-null header node
+ * Assumes elements are of type char**
+ * Returns 0 on success, nonzero on failure
+ */
+int executeCommands(Node* cmdHeader) {
+	Node* cmdNode = cmdHeader;
+	char** cmd;
+
+	while ((cmdNode = cmdNode->next) != NULL) {
+		cmd = (char**)cmdNode->element;
+		if (executeCommand(cmd)) {
+			return 1;
+		}
+	}
+
 	return 0;
 }

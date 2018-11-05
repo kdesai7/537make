@@ -16,7 +16,7 @@ FILES = build_spec_graph.c \
 		proc_creation_prog_exe.h \
 		text_parsing.c \
 		text_parsing.h
-GOOD_FILE = test/makefile # TODO change this
+GOOD_FILE = makefile
 EXPECTED_FILE = expected.txt
 OUT_FILE = out.txt
 BAD_FILES = cmdWhitespace.txt \
@@ -55,7 +55,7 @@ text_parsing.o: text_parsing.c text_parsing.h build_spec_repr.h main.h
 build_spec_repr.o: build_spec_repr.c build_spec_repr.h main.h
 	$(CC) -g $(WARNING_FLAGS) -c build_spec_repr.c
 
-proc_creation_prog_exe.o: proc_creation_prog_exe.c proc_creation_prog_exe.h
+proc_creation_prog_exe.o: proc_creation_prog_exe.c proc_creation_prog_exe.h main.h node.h
 	$(CC) -g $(WARNING_FLAGS) -c proc_creation_prog_exe.c
 
 node.o: node.c node.h
@@ -63,7 +63,7 @@ node.o: node.c node.h
 
 # the -f flag for rm ensures that clean doesn't fail if file to be deleted doesn't exist
 clean:
-	rm -f $(EXE) *.o
+	rm -f $(EXE) test/$(EXE) *.o
 
 # recompile runs clean and then makes everything again to generate executable
 # this is equivalent to running "make clean" followed by "make"

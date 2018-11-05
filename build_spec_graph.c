@@ -15,6 +15,7 @@
 #include "build_spec_repr.h"
 #include "main.h"
 #include "node.h"
+#include "proc_creation_prog_exe.h"
 
 void printNames(Graph* graph) {
 	printf("[");
@@ -225,9 +226,9 @@ Node* find(Node* header, char* name) {
  * Returns the modified time of the given file as a time_t
  * Returns 0 on failure
  */
-time_t lastModifiedTime(char* path) {
+time_t lastModifiedTime(char* target) {
 	struct stat sb;
-	int error = stat(path, &sb);
+	int error = stat(target, &sb);
 	if (error) return 0;
 	if ((sb.st_mode & S_IFMT) != S_IFREG) return 0;
 	return sb.st_mtime;
@@ -244,10 +245,8 @@ int makeTarget(Node* targets, Graph* graph, char* target) {
 	int shouldMakeThis = 0; // truthy if out of date
 	int targetIndex = graphIndexOf(graph, target);
 	struct stat fileStat; // info on file corresponding to this target
-	Node* targetNode;
+	Node* targetNode; // element of type TargetInfo*
 	int error;
-	const int pathSize = BUFFSIZE + 5; // 5 is length of "test/"
-	char path[pathSize]; // path to file
 	time_t thisMtime; // modified time of target
 	time_t depMtime; // modified time of dependency
 
@@ -266,9 +265,7 @@ int makeTarget(Node* targets, Graph* graph, char* target) {
 	// If we find that file, we check deps of target to see if we are up to date
 	if (!shouldMakeThis) { // no children were out of date
 		// Look for a file
-		strcpy(path, "test/");
-		strcat(path, target);
-		error = stat(path, &fileStat);
+		error = stat(target, &fileStat);
 		if (error) { // file not opened
 			if (errno == ENOENT) { // file not found
 				shouldMakeThis = 1; // we have to make it
@@ -278,20 +275,18 @@ int makeTarget(Node* targets, Graph* graph, char* target) {
 			}
 		} else { // file successfully opened
 			if ((fileStat.st_mode & S_IFMT) != S_IFREG) { // not regular file
-				fprintf(stderr, "ERROR: Opened irregular file %s\n", path);
+				fprintf(stderr, "ERROR: Opened irregular file %s\n", target);
 				return -1;
 			}
 			// Check last modified time against last modified times of each child
-			thisMtime = lastModifiedTime(path);
+			thisMtime = lastModifiedTime(target);
 			if (thisMtime == 0) {
-				fprintf(stderr, "ERROR: could not get mtime of %s\n", path);
+				fprintf(stderr, "ERROR: could not get mtime of %s\n", target);
 				return -1;
 			}
 			for (int i = 0; i < graph->size; i++) {
 				if (graph->matrix[targetIndex][i]) {
-					strcpy(path, "test/");
-					strcat(path, graph->names[i]);
-					depMtime = lastModifiedTime(path);
+					depMtime = lastModifiedTime(graph->names[i]);
 					if (difftime(depMtime, thisMtime) > 0) { // dep is newer
 						shouldMakeThis = 1;
 						break;
@@ -308,9 +303,10 @@ int makeTarget(Node* targets, Graph* graph, char* target) {
 			fprintf(stderr, "No rule to make target \"%s\"\n", target);
 			return -1;
 		}
-		// TODO replace with actual execution of commands
 		printf("Commands for %s\n", target);
 		printCmds(targetNode);
+		TargetInfo* targetInfo = (TargetInfo*)targetNode->element;
+		executeCommands(targetInfo->cmds);
 	}
 
 	return shouldMakeThis;
