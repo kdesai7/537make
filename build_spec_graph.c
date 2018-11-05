@@ -243,21 +243,26 @@ int makeTarget(Node* targets, Graph* graph, char* target) {
 		}
 	}
 
-	// Check file if no children were out of date
+	// If no children were out of date, we look for a file named <target>
+	// If we don't find that file, we need to make this target
+	// If we do find that file, we check deps of target to see if we are up to date
 	if (!shouldMakeThis) { // no children were out of date
+		// Look for a file
 		char path[999] = "test/"; // TODO fix this
 		strcat(path, target);
 		int error = stat(path, &fileStat);
-		if (error) {
-			if (errno == ENOENT) {
+		if (error) { // file not opened
+			if (errno == ENOENT) { // file not found
 				printf("File not found\n");
-				shouldMakeThis = 1;
-			} else {
+				shouldMakeThis = 1; // we have to make it
+			} else { // other error
 				printf("Other error %s\n", strerror(errno));
-				return -1;
+				return -1; // unacceptable, quit now
 			}
-		} else { // file successfully found
-			printf("Skipping %s as it is not out of date\n", target);
+		} else { // file successfully opened
+			// TODO check against last edit times of all children
+
+			// For now, assumes it was last edited more recently than children
 		}
 	}
 
@@ -268,8 +273,11 @@ int makeTarget(Node* targets, Graph* graph, char* target) {
 			fprintf(stderr, "No rule to make target \"%s\"\n", target);
 			return -1;
 		}
+		// TODO replace with actual execution of commands
 		printf("Commands for %s\n", target);
 		printCmds(targetNode);
+	} else {
+		printf("Skipping %s as it is not out of date\n", target);
 	}
 
 	return 1;
