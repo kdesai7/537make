@@ -24,31 +24,14 @@ scan-build: clean
 	scan-build -o ./scan-build make
 
 No target specified, making "all"
-Skipping main.c as it is up to date
-Skipping main.h as it is up to date
-Skipping munch.h as it is up to date
-Skipping queue.h as it is up to date
-Skipping writer.h as it is up to date
 Commands for main.o
 	gcc -Wall -Wextra -c main.c
-Skipping main.h as it is up to date
-Skipping munch.h as it is up to date
-Skipping queue.h as it is up to date
-Skipping munch.c as it is up to date
 Commands for munch.o
 	gcc -Wall -Wextra -c munch.c
-Skipping main.h as it is up to date
-Skipping queue.h as it is up to date
-Skipping queue.c as it is up to date
 Commands for queue.o
 	gcc -Wall -Wextra -c queue.c
-Skipping main.h as it is up to date
-Skipping reader.c as it is up to date
 Commands for reader.o
 	gcc -Wall -Wextra -c reader.c
-Skipping main.h as it is up to date
-Skipping queue.h as it is up to date
-Skipping writer.c as it is up to date
 Commands for writer.o
 	gcc -Wall -Wextra -c writer.c
 Commands for all

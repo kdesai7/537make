@@ -8,6 +8,7 @@
 #include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <time.h>
 #include <unistd.h>
 
 #include "build_spec_graph.h"
@@ -221,6 +222,18 @@ Node* find(Node* header, char* name) {
 }
 
 /**
+ * Returns the modified time of the given file as a time_t
+ * Returns 0 on failure
+ */
+time_t lastModifiedTime(char* path) {
+	struct stat sb;
+	int error = stat(path, &sb);
+	if (error) return 0;
+	if ((sb.st_mode & S_IFMT) != S_IFREG) return 0;
+	return sb.st_mtime;
+}
+
+/**
  * Makes the given target if it is out of date
  * Does post-order traversal, making all dependencies first, if necessary
  * Assumes targets is a the header node, elements are TargetInfo*
@@ -232,6 +245,11 @@ int makeTarget(Node* targets, Graph* graph, char* target) {
 	int targetIndex = graphIndexOf(graph, target);
 	struct stat fileStat; // info on file corresponding to this target
 	Node* targetNode;
+	int error;
+	const int pathSize = BUFFSIZE + 5; // 5 is length of "test/"
+	char path[pathSize]; // path to file
+	time_t thisMtime; // modified time of target
+	time_t depMtime; // modified time of dependency
 
 	// Call makeTarget on all children
 	for (int i = 0; i < graph->size; i++) {
@@ -245,24 +263,41 @@ int makeTarget(Node* targets, Graph* graph, char* target) {
 
 	// If no children were out of date, we look for a file named <target>
 	// If we don't find that file, we need to make this target
-	// If we do find that file, we check deps of target to see if we are up to date
+	// If we find that file, we check deps of target to see if we are up to date
 	if (!shouldMakeThis) { // no children were out of date
 		// Look for a file
-		char path[999] = "test/"; // TODO fix this
+		strcpy(path, "test/");
 		strcat(path, target);
-		int error = stat(path, &fileStat);
+		error = stat(path, &fileStat);
 		if (error) { // file not opened
 			if (errno == ENOENT) { // file not found
-				printf("File not found\n");
 				shouldMakeThis = 1; // we have to make it
 			} else { // other error
-				printf("Other error %s\n", strerror(errno));
+				fprintf(stderr, "ERROR in %s: %s\n", target, strerror(errno));
 				return -1; // unacceptable, quit now
 			}
 		} else { // file successfully opened
-			// TODO check against last edit times of all children
-
-			// For now, assumes it was last edited more recently than children
+			if ((fileStat.st_mode & S_IFMT) != S_IFREG) { // not regular file
+				fprintf(stderr, "ERROR: Opened irregular file %s\n", path);
+				return -1;
+			}
+			// Check last modified time against last modified times of each child
+			thisMtime = lastModifiedTime(path);
+			if (thisMtime == 0) {
+				fprintf(stderr, "ERROR: could not get mtime of %s\n", path);
+				return -1;
+			}
+			for (int i = 0; i < graph->size; i++) {
+				if (graph->matrix[targetIndex][i]) {
+					strcpy(path, "test/");
+					strcat(path, graph->names[i]);
+					depMtime = lastModifiedTime(path);
+					if (difftime(depMtime, thisMtime) > 0) { // dep is newer
+						shouldMakeThis = 1;
+						break;
+					}
+				}
+			}
 		}
 	}
 
@@ -276,9 +311,7 @@ int makeTarget(Node* targets, Graph* graph, char* target) {
 		// TODO replace with actual execution of commands
 		printf("Commands for %s\n", target);
 		printCmds(targetNode);
-	} else {
-		printf("Skipping %s as it is up to date\n", target);
 	}
 
-	return 1;
+	return shouldMakeThis;
 }
