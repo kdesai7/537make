@@ -277,7 +277,7 @@ int makeTarget(Node* targets, Graph* graph, char* target) {
 		printf("Commands for %s\n", target);
 		printCmds(targetNode);
 	} else {
-		printf("Skipping %s as it is not out of date\n", target);
+		printf("Skipping %s as it is up to date\n", target);
 	}
 
 	return 1;
