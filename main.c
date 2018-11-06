@@ -11,8 +11,7 @@
 #include "node.h"
 #include "text_parsing.h"
 
-const int BUFFSIZE = 256;
-static char* makefileName = "makefile"; // for testing purposes TODO remove
+const int BUFFSIZE = 1024;
 
 /**
  * Prints the error message to stderr
@@ -117,35 +116,29 @@ int testTargetInfoCreation() {
 }
 
 int main(int argc, char** argv) {
-	char* filename = makefileName; // TODO revert to "makefile"
+	char* filename = "makefile";
 	char* target = NULL;
-	int fileSpecified = 1; // TODO assume no file specified
+	int fileSpecified = 0;
 	Node* targets;
 
 	if (testTargetInfoCreation()) return 1;
 	if (testNode()) return 3;
 
-	if (argc > 1) {
-		filename = argv[1];
-		fileSpecified = 1;
-	}
-
-	if (argc == 3) {
-		target = argv[2];
-	}
-
-	if (argc > 3) {
-		printerr("Accepts up to 2 program arguments");
+	if (argc > 2) {
+		fprintf(stderr, "Usage: %s <target> [target is optional]\n", argv[0]);
 		return -1;
+	} else if (argc == 2) {
+		target = argv[1];
 	}
 
 	targets = parse(filename);
 
 	if (targets == NULL) {
-		if (fileSpecified) { // TODO always true for now, fix later
+		if (fileSpecified) { // TODO always false for now, fix later
 			fprintf(stderr, "Failed to parse %s\n", filename);
 			return -1;
 		} else { // we were looking for "makefile"
+			// TODO only look for 'Makefile' if 'makefile' resulted in file not found
 			filename[0] = 'M'; // look for "Makefile"
 			targets = parse(filename);
 			if (targets == NULL) {
