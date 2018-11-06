@@ -11,7 +11,6 @@
 #include "text_parsing.h"
 
 static const char* MSG_MALLOC = "Malloc failed";
-static const char* MSG_FILE_NOT_FOUND = "File not found";
 static const char* MSG_FILE_NOT_CLOSED = "File failed to close";
 static const char* MSG_LINE_TOO_LONG = "Line too long";
 static const char* MSG_LINE_STARTS_WITH_SPACE = "Line starts with space";
@@ -240,7 +239,7 @@ int determineLineType(char* buffer, int length, int firstMeaningfulLine, int lin
  * Parse the given file, return a linked list of TargetInfo elements
  * Return NULL on failure
  */
-Node* parse(char* filename) {
+Node* parse(char* filename, int* fileNotFound) {
 	TargetInfoBuilder* tib = newTargetInfoBuilder();
 	FILE* file;
 	char* buffer; // stores one line at a time
@@ -255,7 +254,7 @@ Node* parse(char* filename) {
 	// Open file
 	file = fopen(filename, "r");
 	if (file == NULL) {
-		printerr(MSG_FILE_NOT_FOUND);
+		fileNotFound[0] = 1;
 		return NULL;
 	}
 

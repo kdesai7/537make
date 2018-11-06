@@ -116,10 +116,12 @@ int testTargetInfoCreation() {
 }
 
 int main(int argc, char** argv) {
-	char* filename = "makefile";
+	char filename[BUFFSIZE];
 	char* target = NULL;
 	int fileSpecified = 0;
 	Node* targets;
+	int fileNotFound[1];
+	fileNotFound[0] = 0;
 
 	if (testTargetInfoCreation()) return 1;
 	if (testNode()) return 3;
@@ -131,21 +133,29 @@ int main(int argc, char** argv) {
 		target = argv[1];
 	}
 
-	targets = parse(filename);
+	strcpy(filename, "makefile");
+	targets = parse(filename, fileNotFound);
 
 	if (targets == NULL) {
 		if (fileSpecified) { // TODO always false for now, fix later
+			// TODO print fileNotFound error if necessary
 			fprintf(stderr, "Failed to parse %s\n", filename);
 			return -1;
 		} else { // we were looking for "makefile"
-			// TODO only look for 'Makefile' if 'makefile' resulted in file not found
-			filename[0] = 'M'; // look for "Makefile"
-			targets = parse(filename);
-			if (targets == NULL) {
-				fprintf(stderr, "Failed to parse both 'makefile' and 'Makefile'");
-				return -1;
+			if (fileNotFound[0]) {
+				strcpy(filename, "Makefile"); // look for "Makefile"
+				fileNotFound[0] = 0;
+				targets = parse(filename, fileNotFound);
 			}
 		}
+	}
+
+	if (targets == NULL) {
+		if (fileNotFound[0]) {
+			fprintf(stderr, "File not found\n");
+		}
+		fprintf(stderr, "Failed to parse %s\n", filename);
+		return -1;
 	}
 
 	if (targets->next == NULL) {
