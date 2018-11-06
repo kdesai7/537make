@@ -13,10 +13,14 @@
 static const char* MSG_MALLOC = "Malloc failed";
 static const char* MSG_FILE_NOT_FOUND = "File not found";
 static const char* MSG_FILE_NOT_CLOSED = "File failed to close";
-static const char* MSG_LINE_TOO_LONG = "Token too long";
+static const char* MSG_LINE_TOO_LONG = "Line too long";
 static const char* MSG_LINE_STARTS_WITH_SPACE = "Line starts with space";
 static const char* MSG_NULL_TERMINATOR = "Line contains null terminator";
 static const char* MSG_NO_TERMINATOR = "No null terminator at end of buffer";
+
+void printErrorLine(int lineNum, char* line) {
+	fprintf(stderr, "%d: Invalid line: \"%s\"\n", lineNum, line);
+}
 
 /**
  * Prints out a tokenized line for debugging purposes
@@ -174,13 +178,14 @@ int isWhitespaceOrColon(char c) {
  * Line must end with null terminator (Error code -1)
  * if target line : return 1; command line: return 0; invalid line : return -1
  */
-int determineLineType(char* buffer, int length, int firstMeaningfulLine) {
+int determineLineType(char* buffer, int length, int firstMeaningfulLine, int lineNum) {
 	int expectingTargetLine = 0;
 	int foundColon = 0; // whether we have encountered a colon yet
 	int foundWhitespace = 0; // whether we have encountered whitespace yet
 	char c = buffer[0];
 	if (c == ' ') {
 		printerr(MSG_LINE_STARTS_WITH_SPACE);
+		printErrorLine(lineNum, buffer);
 		return -1; // invalid Line
 	}
 
@@ -188,11 +193,13 @@ int determineLineType(char* buffer, int length, int firstMeaningfulLine) {
 
 	if (firstMeaningfulLine && !expectingTargetLine) {
 		printerr("First meaningful line isn't a target");
+		printErrorLine(lineNum, buffer);
 		return -1;
 	}
 
 	if (!expectingTargetLine && (buffer[1] == '\t' || buffer[1] == ' ')) {
 		printerr("Command line has too much whitespace");
+		printErrorLine(lineNum, buffer);
 		return -1;
 	}
 
@@ -205,11 +212,13 @@ int determineLineType(char* buffer, int length, int firstMeaningfulLine) {
 		if (expectingTargetLine) {
 			if (foundColon && c == ':') { // if we find a second colon
 				printerr("Target line has multiple colons");
+				printErrorLine(lineNum, buffer);
 				return -1;
 			}
 			// two words before colon makes something invalid
 			if (foundWhitespace && !foundColon && !isWhitespaceOrColon(c)) {
 				printerr("Multiple words before colon");
+				printErrorLine(lineNum, buffer);
 				return -1;
 			}
 
@@ -220,6 +229,7 @@ int determineLineType(char* buffer, int length, int firstMeaningfulLine) {
 
 	if (buffer[length] != '\0') {
 		printerr(MSG_NO_TERMINATOR);
+		printErrorLine(lineNum, buffer);
 		return -1;
 	}
 
@@ -232,13 +242,15 @@ int determineLineType(char* buffer, int length, int firstMeaningfulLine) {
  */
 Node* parse(char* filename) {
 	TargetInfoBuilder* tib = newTargetInfoBuilder();
-
 	FILE* file;
 	char* buffer; // stores one line at a time
 	int c;
 	int validBuffer = 0; // false iff buffer overflow
 	int length = 0;
 	int firstMeaningfulLine = 1; // truthy if parsing first meaningful line
+	int lineNum = 0;
+
+	if (tib == NULL) return NULL;
 
 	// Open file
 	file = fopen(filename, "r");
@@ -279,14 +291,27 @@ Node* parse(char* filename) {
 			buffer[i] = c;
 		} // end buffer population
 
+		lineNum++;
+
 		if (!validBuffer) {
 			printerr(MSG_LINE_TOO_LONG);
+			// shouldn't increment line num yet, use linenum - 1
+			fprintf(stderr, "%d: Invalid line: \"", lineNum - 1);
+			// print each char in buffer
+			for (int i = 0; i < BUFFSIZE; i++) {
+				fprintf(stderr, "%c", buffer[i]);
+			}
+			// print remaining chars in line
+			while ((c = getc(file)) != '\n' && c != EOF) {
+				fprintf(stderr, "%c", c);
+			}
+			fprintf(stderr, "\"\n"); // close quote for line
 			return NULL;
 		}
 
 		// ignore blank lines and comment lines
 		if (length > 0 && buffer[0] != '#') { // if meaningful line
-			int result = determineLineType(buffer, length, firstMeaningfulLine);
+			int result = determineLineType(buffer, length, firstMeaningfulLine, lineNum);
 			firstMeaningfulLine = 0;
 			if (result == -1) { // line is invalid
 				return NULL;
