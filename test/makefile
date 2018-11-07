@@ -30,3 +30,6 @@ bad-target: nonexistentfile.c
 bad-commands:
 	ls /potatoes
 	echo "SUCCESS"
+
+duplicate-target:
+duplicate-target:

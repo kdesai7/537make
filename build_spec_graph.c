@@ -157,9 +157,10 @@ void* buildSpecGraph(Node* targetsHeader) {
 	int row; // row within graph matrix
 	int col; // col within graph matrix
 	Node* nameNode;
+	Node* targets = newNode(NULL); // current targets to find dupes
 	int namesIndex = 0;
 
-	if (names == NULL) return NULL;
+	if (names == NULL || targets == NULL) return NULL;
 
 	// Add all the names of targets and their dependencies
 	while((targetNode = targetNode->next) != NULL) {
@@ -167,6 +168,14 @@ void* buildSpecGraph(Node* targetsHeader) {
 		name = target->name;
 		// Add target's name
 		addIfNotIn(names, name);
+
+		// Detect duplicate targets
+		if (indexOf(targets, name) != -1) {
+			fprintf(stderr, "ERROR: duplicate target \"%s\"\n", name);
+			return NULL;
+		}
+		append(targets, name);
+
 		// Add target's dependencies
 		dep = target->deps;
 		while ((dep = dep->next) != NULL) {
