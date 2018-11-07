@@ -248,6 +248,7 @@ Node* parse(char* filename, int* fileNotFound) {
 	int length = 0;
 	int firstMeaningfulLine = 1; // truthy if parsing first meaningful line
 	int lineNum = 0;
+	int foundToken = 0;
 
 	if (tib == NULL) return NULL;
 
@@ -268,6 +269,7 @@ Node* parse(char* filename, int* fileNotFound) {
 		}
 
 		validBuffer = 0; // assume line invalid until told otherwise
+		foundToken = 0;
 
 		// populate the buffer for one line
 		for (int i = 0; i < BUFFSIZE; i++) {
@@ -286,6 +288,11 @@ Node* parse(char* filename, int* fileNotFound) {
 				length = i;
 				break;
 			} // end of 'if end of line'
+
+			// if non-whitespace character
+			if (!foundToken && c != ' ' && c != '\t') {
+				foundToken = 1;
+			}
 
 			buffer[i] = c;
 		} // end buffer population
@@ -310,6 +317,11 @@ Node* parse(char* filename, int* fileNotFound) {
 
 		// ignore blank lines and comment lines
 		if (length > 0 && buffer[0] != '#') { // if meaningful line
+			if (!foundToken) {
+				printerr("No tokens on given line");
+				printErrorLine(lineNum, buffer);
+				return NULL;
+			}
 			int result = determineLineType(buffer, length, firstMeaningfulLine, lineNum);
 			firstMeaningfulLine = 0;
 			if (result == -1) { // line is invalid
