@@ -163,8 +163,6 @@ int main(int argc, char** argv) {
 		return -1;
 	}
 
-	printTargets(targets); // for testing purposes TODO remove
-
 	Graph* graph = buildSpecGraph(targets);
 
 	if (graph  == NULL) {
@@ -172,11 +170,9 @@ int main(int argc, char** argv) {
 		return -1;
 	}
 
-	if (target == NULL) {
+	if (target == NULL) { // no target specified, get first target
 		target = (char*)((TargetInfo*)targets->next->element)->name;
-		printf("No target specified, ");
 	}
-	printf("making \"%s\"\n", target);
 
 	if (makeTarget(targets, graph, target) < 0) {
 		printerr("Make target failed");

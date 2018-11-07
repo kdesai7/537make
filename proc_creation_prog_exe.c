@@ -24,6 +24,13 @@ int executeCommand(char** command) {
 	child_pid = fork();
 
 	if (child_pid == 0) { // child process
+		// Print command
+		for (int i = 0; command[i] != NULL; i++) {
+			if (i != 0) printf(" ");
+			printf("%s", command[i]);
+		}
+		printf("\n");
+
 		execvp(command[0], command);
 		// if exec fails
 		perror("execvp");

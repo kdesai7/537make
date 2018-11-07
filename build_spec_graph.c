@@ -309,8 +309,6 @@ int makeTarget(Node* targets, Graph* graph, char* target) {
 			fprintf(stderr, "No rule to make target \"%s\"\n", target);
 			return -1;
 		}
-		printf("Commands for %s\n", target);
-		printCmds(targetNode);
 		TargetInfo* targetInfo = (TargetInfo*)targetNode->element;
 		executeCommands(targetInfo->cmds);
 	}
