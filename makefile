@@ -65,6 +65,9 @@ node.o: node.c node.h
 clean:
 	rm -f $(EXE) test/$(EXE) *.o
 
+scan-build: clean
+	scan-build -o $(SCAN_BUILD_DIR) make
+
 # recompile runs clean and then makes everything again to generate executable
 # this is equivalent to running "make clean" followed by "make"
 recompile: clean $(EXE)
