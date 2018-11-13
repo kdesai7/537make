@@ -1,0 +1,171 @@
+==4323== Memcheck, a memory error detector
+==4323== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==4323== Using Valgrind-3.13.0 and LibVEX; rerun with -h for copyright info
+==4323== Command: ../537make
+==4323== 
+==4323== 
+==4323== HEAP SUMMARY:
+==4323==     in use at exit: 3,941 bytes in 59 blocks
+==4323==   total heap usage: 85 allocs, 26 frees, 33,165 bytes allocated
+==4323== 
+==4323== 64 (16 direct, 48 indirect) bytes in 1 blocks are definitely lost in loss record 14 of 22
+==4323==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==4323==    by 0x10B086: newNode (node.c:40)
+==4323==    by 0x109901: buildSpecGraph (build_spec_graph.c:154) 
+==4323==    by 0x109293: main (main.c:163)
+==4323== 
+==4323== 64 (16 direct, 48 indirect) bytes in 1 blocks are definitely lost in loss record 15 of 22
+==4323==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==4323==    by 0x10B086: newNode (node.c:40)
+==4323==    by 0x109917: buildSpecGraph (build_spec_graph.c:163) 
+==4323==    by 0x109293: main (main.c:163)
+==4323== 
+==4323== 64 bytes in 3 blocks are definitely lost in loss record 16 of 22
+==4323==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==4323==    by 0x10A2FB: tokenize (text_parsing.c:129) 
+==4323==    by 0x10A9A1: parse (text_parsing.c:335)
+==4323==    by 0x109199: main (main.c:134)
+==4323== 
+==4323== 108 (24 direct, 84 indirect) bytes in 1 blocks are definitely lost in loss record 18 of 22
+==4323==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==4323==    by 0x109461: newGraph (build_spec_graph.c:40)
+==4323==    by 0x109A30: buildSpecGraph (build_spec_graph.c:192)
+==4323==    by 0x109293: main (main.c:163)
+==4323== 
+==4323== 569 (16 direct, 553 indirect) bytes in 1 blocks are definitely lost in loss record 21 of 22
+==4323==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==4323==    by 0x10ACA6: newTargetInfoBuilder (build_spec_repr.c:96)
+==4323==    by 0x10A69C: parse (text_parsing.c:243)
+==4323==    by 0x109199: main (main.c:134)
+==4323== 
+==4323== 3,072 bytes in 3 blocks are definitely lost in loss record 22 of 22
+==4323==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==4323==    by 0x10ABDB: newTargetInfo (build_spec_repr.c:75)
+==4323==    by 0x10AD0E: addNewTarget (build_spec_repr.c:119)
+==4323==    by 0x10A192: processLine (text_parsing.c:64)
+==4323==    by 0x10A9C7: parse (text_parsing.c:337)
+==4323==    by 0x109199: main (main.c:134)
+==4323== 
+==4323== LEAK SUMMARY:
+==4323==    definitely lost: 3,208 bytes in 10 blocks
+==4323==    indirectly lost: 733 bytes in 49 blocks
+==4323==      possibly lost: 0 bytes in 0 blocks
+==4323==    still reachable: 0 bytes in 0 blocks
+==4323==         suppressed: 0 bytes in 0 blocks
+==4323== 
+==4323== For counts of detected and suppressed errors, rerun with: -v
+==4323== ERROR SUMMARY: 6 errors from 6 contexts (suppressed: 0 from 0)
+==4658== Memcheck, a memory error detector
+==4658== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==4658== Using Valgrind-3.13.0 and LibVEX; rerun with -h for copyright info
+==4658== Command: ../537make
+==4658== 
+==4658== 
+==4658== HEAP SUMMARY:
+==4658==     in use at exit: 1,419 bytes in 30 blocks
+==4658==   total heap usage: 37 allocs, 7 frees, 11,187 bytes allocated
+==4658== 
+==4658== 16 bytes in 1 blocks are definitely lost in loss record 11 of 20
+==4658==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==4658==    by 0x10A2FB: tokenize (text_parsing.c:129)
+==4658==    by 0x10A9A1: parse (text_parsing.c:335)
+==4658==    by 0x109199: main (main.c:134)
+==4658== 
+==4658== 32 (16 direct, 16 indirect) bytes in 1 blocks are definitely lost in loss record 14 of 20
+==4658==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==4658==    by 0x10B086: newNode (node.c:40)
+==4658==    by 0x109901: buildSpecGraph (build_spec_graph.c:154)
+==4658==    by 0x109293: main (main.c:163)
+==4658== 
+==4658== 32 (16 direct, 16 indirect) bytes in 1 blocks are definitely lost in loss record 15 of 20
+==4658==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==4658==    by 0x10B086: newNode (node.c:40)
+==4658==    by 0x109917: buildSpecGraph (build_spec_graph.c:163)
+==4658==    by 0x109293: main (main.c:163)
+==4658== 
+==4658== 44 (24 direct, 20 indirect) bytes in 1 blocks are definitely lost in loss record 16 of 20
+==4658==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==4658==    by 0x109461: newGraph (build_spec_graph.c:40)
+==4658==    by 0x109A30: buildSpecGraph (build_spec_graph.c:192)
+==4658==    by 0x109293: main (main.c:163)
+==4658== 
+==4658== 271 (16 direct, 255 indirect) bytes in 1 blocks are definitely lost in loss record 19 of 20
+==4658==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==4658==    by 0x10ACA6: newTargetInfoBuilder (build_spec_repr.c:96)
+==4658==    by 0x10A69C: parse (text_parsing.c:243)
+==4658==    by 0x109199: main (main.c:134)
+==4658== 
+==4658== 1,024 bytes in 1 blocks are definitely lost in loss record 20 of 20
+==4658==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==4658==    by 0x10ABDB: newTargetInfo (build_spec_repr.c:75)
+==4658==    by 0x10AD0E: addNewTarget (build_spec_repr.c:119)
+==4658==    by 0x10A192: processLine (text_parsing.c:64)
+==4658==    by 0x10A9C7: parse (text_parsing.c:337)
+==4658==    by 0x109199: main (main.c:134)
+==4658== 
+==4658== LEAK SUMMARY:
+==4658==    definitely lost: 1,112 bytes in 6 blocks
+==4658==    indirectly lost: 307 bytes in 24 blocks
+==4658==      possibly lost: 0 bytes in 0 blocks
+==4658==    still reachable: 0 bytes in 0 blocks
+==4658==         suppressed: 0 bytes in 0 blocks
+==4658== 
+==4658== For counts of detected and suppressed errors, rerun with: -v
+==4658== ERROR SUMMARY: 6 errors from 6 contexts (suppressed: 0 from 0)
+==5719== Memcheck, a memory error detector
+==5719== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==5719== Using Valgrind-3.13.0 and LibVEX; rerun with -h for copyright info
+==5719== Command: ../537make
+==5719== 
+==5719== 
+==5719== HEAP SUMMARY:
+==5719==     in use at exit: 36,736 bytes in 605 blocks
+==5719==   total heap usage: 696 allocs, 91 frees, 132,520 bytes allocated
+==5719== 
+==5719== 352 (16 direct, 336 indirect) bytes in 1 blocks are definitely lost in loss record 9 of 22
+==5719==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==5719==    by 0x10B086: newNode (node.c:40)
+==5719==    by 0x109917: buildSpecGraph (build_spec_graph.c:163)
+==5719==    by 0x109293: main (main.c:163)
+==5719== 
+==5719== 656 (16 direct, 640 indirect) bytes in 1 blocks are definitely lost in loss record 13 of 22
+==5719==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==5719==    by 0x10B086: newNode (node.c:40)
+==5719==    by 0x109901: buildSpecGraph (build_spec_graph.c:154)
+==5719==    by 0x109293: main (main.c:163)
+==5719== 
+==5719== 784 bytes in 21 blocks are definitely lost in loss record 15 of 22
+==5719==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==5719==    by 0x10A2FB: tokenize (text_parsing.c:129)
+==5719==    by 0x10A9A1: parse (text_parsing.c:335)
+==5719==    by 0x109199: main (main.c:134)
+==5719== 
+==5719== 6,376 (16 direct, 6,360 indirect) bytes in 1 blocks are definitely lost in loss record 19 of 22
+==5719==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==5719==    by 0x10ACA6: newTargetInfoBuilder (build_spec_repr.c:96)
+==5719==    by 0x10A69C: parse (text_parsing.c:243)
+==5719==    by 0x109199: main (main.c:134)
+==5719== 
+==5719== 7,064 (24 direct, 7,040 indirect) bytes in 1 blocks are definitely lost in loss record 21 of 22
+==5719==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==5719==    by 0x109461: newGraph (build_spec_graph.c:40)
+==5719==    by 0x109A30: buildSpecGraph (build_spec_graph.c:192)
+==5719==    by 0x109293: main (main.c:163)
+==5719== 
+==5719== 21,504 bytes in 21 blocks are definitely lost in loss record 22 of 22
+==5719==    at 0x4C2FB0F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==5719==    by 0x10ABDB: newTargetInfo (build_spec_repr.c:75)
+==5719==    by 0x10AD0E: addNewTarget (build_spec_repr.c:119)
+==5719==    by 0x10A192: processLine (text_parsing.c:64)
+==5719==    by 0x10A9C7: parse (text_parsing.c:337)
+==5719==    by 0x109199: main (main.c:134)
+==5719== 
+==5719== LEAK SUMMARY:
+==5719==    definitely lost: 22,360 bytes in 46 blocks
+==5719==    indirectly lost: 14,376 bytes in 559 blocks
+==5719==      possibly lost: 0 bytes in 0 blocks
+==5719==    still reachable: 0 bytes in 0 blocks
+==5719==         suppressed: 0 bytes in 0 blocks
+==5719== 
+==5719== For counts of detected and suppressed errors, rerun with: -v
+==5719== ERROR SUMMARY: 6 errors from 6 contexts (suppressed: 0 from 0)
