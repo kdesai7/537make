@@ -52,9 +52,9 @@ Node* newNode(void* element) {
  * Zero on success, nonzero on failure
  */
 int append(Node* head, void* element) {
+	if (head == NULL) return 1;
 	Node* node = newNode(element);
 	Node* curr = head;
-	if (curr == NULL) return 1;
 	while (curr->next != NULL) {
 		curr = curr->next;
 	}

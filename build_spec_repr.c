@@ -75,16 +75,19 @@ TargetInfo* newTargetInfo() {
 	t->name = (char*) malloc(BUFFSIZE * sizeof(char));
 	if (t->name == NULL) {
 		fprintf(stderr, "malloc for name failed\n");
+		free(t);
 		return NULL;
 	}
 	t->cmds = (Node*) malloc(sizeof(Node));
 	if (t->cmds == NULL) {
 		fprintf(stderr, "malloc for cmds failed\n");
+		free(t);
 		return NULL;
 	}
 	t->deps = (Node*) malloc(sizeof(Node));
 	if (t->deps == NULL) {
 		fprintf(stderr, "malloc for deps failed\n");
+		free(t);
 		return NULL;
 	}
 
@@ -117,7 +120,10 @@ int addNewTarget(TargetInfoBuilder* tib, char** tokens) {
 	newTarget->name = tokens[0];
 	for (int i = 1; tokens[i] != NULL; i++) {
 		error = append(newTarget->deps, (void*)tokens[i]);
-		if (error) return 3;
+		if (error) {
+			free(newTarget);
+			return 3;
+		}
 	}
 
 	error = append(tib->targets, newTarget);

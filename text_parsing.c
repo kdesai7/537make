@@ -279,8 +279,10 @@ Node* parse(char* filename, int* fileNotFound) {
 				if (c == EOF && i == 0) { // end of file
 					if (fclose(file)) {
 						printerr(MSG_FILE_NOT_CLOSED);
+						free(buffer);
 						return NULL;
 					}
+					free(buffer);
 					return tib->targets; // return the targets
 				}
 				buffer[i] = '\0';
@@ -312,6 +314,7 @@ Node* parse(char* filename, int* fileNotFound) {
 				fprintf(stderr, "%c", c);
 			}
 			fprintf(stderr, "\"\n"); // close quote for line
+			free(buffer);
 			return NULL;
 		}
 
@@ -320,11 +323,13 @@ Node* parse(char* filename, int* fileNotFound) {
 			if (!foundToken) {
 				printerr("No tokens on given line");
 				printErrorLine(lineNum, buffer);
+				free(buffer);
 				return NULL;
 			}
 			int result = determineLineType(buffer, length, firstMeaningfulLine, lineNum);
 			firstMeaningfulLine = 0;
 			if (result == -1) { // line is invalid
+				free(buffer);
 				return NULL;
 			}
 			char** tokenizedLine = tokenize(buffer, result);

@@ -68,7 +68,9 @@ int executeCommands(Node* cmdHeader) {
 
 	while ((cmdNode = cmdNode->next) != NULL) {
 		cmd = (char**)cmdNode->element;
-		if (executeCommand(cmd)) {
+		if (cmd[0] == NULL // got empty command
+			|| executeCommand(cmd) // command execution failed
+		) {
 			return 1;
 		}
 	}

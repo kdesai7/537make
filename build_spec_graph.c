@@ -46,6 +46,7 @@ Graph* newGraph(int size) {
 	g->matrix = (int**)malloc(size * sizeof(int*));
 	if (g->matrix == NULL) {
 		printerr("Malloc failed");
+		free(g);
 		return NULL;
 	}
 
@@ -53,6 +54,7 @@ Graph* newGraph(int size) {
 		g->matrix[r] = (int*)malloc(size * sizeof(int));
 		if (g->matrix[r] == NULL) {
 			printerr("Malloc failed");
+			free(g);
 			return NULL;
 		}
 		for (int c = 0; c < size; c++) {
@@ -63,6 +65,7 @@ Graph* newGraph(int size) {
 	g->names = (char**)malloc(size * sizeof(char*));
 	if (g->names == NULL) {
 		printerr("Malloc failed");
+		free(g);
 		return NULL;
 	}
 
