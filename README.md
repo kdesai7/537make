@@ -26,3 +26,14 @@ Running `make test` automatically compiles and tests the code. The tests should 
 `linesize_testcase`: A invalid case of target line buffer overflow
 
 `whitespace_testcase`: A special case of whitespaces in multilple lines
+
+## Valgrind Errors
+
+All changes are detailed in the "Start to fix Valgrind errors" commit, feel free to `git diff`, the repo is included in the handin directory.
+
+`build_spec_repr.c:81`: Didn't call newNode, instead malloc'd which didn't set fields
+`build_spec_repr.c:87`: Didn't call newNode, instead malloc'd which didn't set fields
+`build_spec_repr.c:100`: Didn't call newNode, instead malloc'd which didn't set fields
+
+All issues were solved with calling newNode(NULL) instead. In some cases, we realized we could remove error logging as that was handled in newNode. In one case (line 100), we realized we didn't check a malloc, so we fixed that real quick :).
+
