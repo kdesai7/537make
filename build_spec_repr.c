@@ -78,15 +78,13 @@ TargetInfo* newTargetInfo() {
 		free(t);
 		return NULL;
 	}
-	t->cmds = (Node*) malloc(sizeof(Node));
+	t->cmds = newNode(NULL);
 	if (t->cmds == NULL) {
-		fprintf(stderr, "malloc for cmds failed\n");
 		free(t);
 		return NULL;
 	}
-	t->deps = (Node*) malloc(sizeof(Node));
+	t->deps = newNode(NULL);
 	if (t->deps == NULL) {
-		fprintf(stderr, "malloc for deps failed\n");
 		free(t);
 		return NULL;
 	}
@@ -97,7 +95,11 @@ TargetInfo* newTargetInfo() {
 TargetInfoBuilder* newTargetInfoBuilder() {
 	TargetInfoBuilder* t =
 		(TargetInfoBuilder*) malloc(sizeof(TargetInfoBuilder));
-	t->targets = (Node*) malloc(sizeof(Node));
+	if (t == NULL) {
+		printerr("Malloc failed");
+		return NULL;
+	}
+	t->targets = newNode(NULL);
 	t->tail = t->targets;
 	return t;
 }
