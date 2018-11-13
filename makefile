@@ -3,6 +3,8 @@ WARNING_FLAGS=-Wall -Wextra
 EXE=537make
 # LIBS is placed at the end of gcc's linking stage (after all .o files) so it links the necessary library functions (like pthread) to your code
 LIBS=-lpthread # if needed, add more libraries here
+SCAN_BUILD=/s/std/bin/scan-build
+SCAN_BUILD_DIR=./scan-build
 
 FILES = build_spec_graph.c \
 		build_spec_graph.h \
@@ -64,9 +66,10 @@ node.o: node.c node.h
 # the -f flag for rm ensures that clean doesn't fail if file to be deleted doesn't exist
 clean:
 	rm -f $(EXE) test/$(EXE) *.o
+	rm -rf $(SCAN_BUILD_DIR)
 
 scan-build: clean
-	scan-build -o $(SCAN_BUILD_DIR) make
+	$(SCAN_BUILD) -o $(SCAN_BUILD_DIR) make
 
 # recompile runs clean and then makes everything again to generate executable
 # this is equivalent to running "make clean" followed by "make"
