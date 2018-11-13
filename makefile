@@ -43,7 +43,7 @@ LIGHT_RED = \e[91m
 
 # the -g flag at all gcc compilation stages ensures that you can use gdb to debug your code
 $(EXE): clean main.o build_spec_graph.o text_parsing.o build_spec_repr.o proc_creation_prog_exe.o node.o
-	$(CC) -g -o $(EXE) main.o build_spec_graph.o text_parsing.o build_spec_repr.o proc_creation_prog_exe.o node.o $(LIBS)
+	$(CC) -g -O0 -o $(EXE) main.o build_spec_graph.o text_parsing.o build_spec_repr.o proc_creation_prog_exe.o node.o $(LIBS)
 
 main.o: main.c build_spec_graph.h text_parsing.h build_spec_repr.h proc_creation_prog_exe.h node.h
 	$(CC) -g $(WARNING_FLAGS) -c main.c
