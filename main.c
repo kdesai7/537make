@@ -123,9 +123,6 @@ int main(int argc, char** argv) {
 	int fileNotFound[1];
 	fileNotFound[0] = 0;
 
-	if (testTargetInfoCreation()) return 1;
-	if (testNode()) return 3;
-
 	if (argc > 2) {
 		fprintf(stderr, "Usage: %s <target> [target is optional]\n", argv[0]);
 		return -1;
